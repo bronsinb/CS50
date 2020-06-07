@@ -1,6 +1,6 @@
 # CS50 Web Programming with Python and JavaScript
-Course offered by Harvard on EDX
-This repository contains all the work and projects from the course
+Course offered by Harvard on EDX!
+This repository contains all the work and projects from the course.
 #### Topics covered:
   - Git
   - HTML, CSS
