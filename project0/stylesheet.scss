@@ -1,0 +1,28 @@
+$margin: auto;
+
+@media (max-width: 699px) 
+{
+    h1 {
+        font-size: xx-large;
+    }
+    h3 {
+        font-size: large;
+    }
+    img {
+        width: 50%;
+    }
+}
+
+div[class="card text-center border-warning"], div[class="card border-info"], img{
+    border-radius: 20px;
+}
+
+.center {
+    margin: $margin;
+    padding: 15px;
+}
+
+.center-button{
+    margin: $margin;
+    padding: 6px;
+}
