@@ -5,15 +5,43 @@ $margin: auto;
     h1 {
         font-size: xx-large;
     }
+    h2 {
+        font-size: x-large;
+    }
     h3 {
         font-size: large;
+    }
+    h4 {
+        font-size: medium;
+    }
+    h5 {
+        font-size: small;
+    }
+    h6 {
+        font-size: smaller;
+    }
+    p {
+        font-size: small;
     }
     img {
         width: 50%;
     }
 }
 
-div[class="card text-center border-warning"], div[class="card border-info"], img{
+a[type="button"]{
+    border-radius: 10px;
+}
+a:hover[type="button"]{
+    box-shadow: 0 5px 5px rgba(0,0,0,0.3);
+}
+
+div[class="card-body"]{
+    h6{
+        color: #606060;
+    }
+}
+
+div[class="card text-center border-warning"], div[class="card border-primary"], div[class="card border-info"], img{
     border-radius: 20px;
 }
 
