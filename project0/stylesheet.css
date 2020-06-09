@@ -1,3 +1,8 @@
+#volunteer, #work {
+  font-family: sans-serif;
+  font-weight: 300;
+}
+
 @media (max-width: 699px) {
   h1 {
     font-size: xx-large;
@@ -31,6 +36,14 @@
     width: 50%;
   }
 }
+div[class=card-body] h6 {
+  color: #606060;
+}
+
+div[class="card text-center border-warning"], div[class="card border-primary"], div[class="card border-success"], div[class="card border-info"], img {
+  border-radius: 20px;
+}
+
 a[type=button] {
   border-radius: 10px;
 }
@@ -39,12 +52,12 @@ a:hover[type=button] {
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
 }
 
-div[class=card-body] h6 {
-  color: #606060;
+#work {
+  color: #009400;
 }
 
-div[class="card text-center border-warning"], div[class="card border-primary"], div[class="card border-info"], img {
-  border-radius: 20px;
+#volunteer {
+  color: #5e0037;
 }
 
 .center {
