@@ -32,6 +32,10 @@
     font-size: small;
   }
 
+  th, td {
+    font-size: small;
+  }
+
   img {
     width: 50%;
   }
@@ -50,6 +54,15 @@ a[type=button] {
 
 a:hover[type=button] {
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
+}
+
+table, th, td {
+  border-radius: 10px;
+  background: #ddd;
+  overflow: hidden;
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 6px;
 }
 
 #work {

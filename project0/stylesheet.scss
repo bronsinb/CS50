@@ -1,4 +1,6 @@
 $margin: auto;
+$small-radius: 10px;
+$radius: 20px;
 
 %section{
     font-family: sans-serif;
@@ -28,6 +30,9 @@ $margin: auto;
     p {
         font-size: small;
     }
+    th, td {
+        font-size: small;
+    }
     img {
         width: 50%;
     }
@@ -40,14 +45,23 @@ div[class="card-body"]{
 }
 
 div[class="card text-center border-warning"], div[class="card border-primary"], div[class="card border-success"], div[class="card border-info"], img{
-    border-radius: 20px;
+    border-radius: $radius;
 }
 
 a[type="button"]{
-    border-radius: 10px;
+    border-radius: $small-radius;
 }
 a:hover[type="button"]{
     box-shadow: 0 5px 5px rgba(0,0,0,0.3);
+}
+
+table, th, td {
+    border-radius: $small-radius;
+    background: #ddd;
+    overflow: hidden;
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 6px;
 }
 
 #work{
