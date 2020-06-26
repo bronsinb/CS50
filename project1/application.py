@@ -28,31 +28,41 @@ db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/login")
 def login():
-    return render_template("auth.html", main="Log In", navs={"Register": "register"})
+    return render_template("auth.html", main="Log In", inputs={"Username": "username", "Password": "password"}, navs={"Register": "register"})
 
 @app.route("/register")
 def register():
-    return render_template("auth.html", main="Register", navs={"Log In": "login"})
+    return render_template("auth.html", main="Register", inputs={"Username": "username", "Password": "password"}, navs={"Log In": "login"})
 
 @app.route("/authenticate", methods=["POST"])
 def authenticate():
     username = request.form.get("username")
     password = request.form.get("password")
     auth_type = request.form.get("auth_type")
+    passhash = hashlib.md5(password.encode()).hexdigest()
+
+    print(username)
+    print(password)
+    print(auth_type)
 
     #Register
-    if auth_type is "Register":
-        db.execute("INSERT INTO flights (username, passhash) VALUES (:username, :passhash)",
-            {"username": username, "passhash": hashlib.md5(password.encode()).hexdigest()})
-        db.commit()
-
-    #Check if user exists
-    if db.execute("SELECT * FROM users WHERE username = :username AND passhash = :passhash", 
-        {"username": username, "passhash": hashlib.md5(password.encode()).hexdigest()}).rowcount == 0:
+    if auth_type == "Register":
+        try:
+            db.execute("INSERT INTO users (username, passhash) VALUES (:username, :passhash)",
+                {"username": username, "passhash": passhash})
+            db.commit()
+        except:
+            print("Wrong")
         return redirect(url_for('login'))
 
-    session["username"] = username
-    return redirect(url_for('index'))
+    #Check if user exists
+    if auth_type == "Log In":
+        if db.execute("SELECT * FROM users WHERE username = :username AND passhash = :passhash", 
+            {"username": username, "passhash": passhash}).rowcount == 0:
+            return redirect(url_for('login'))
+
+        session["username"] = username
+        return redirect(url_for('index'))
     
 
 @app.route("/")
@@ -60,4 +70,9 @@ def index():
     if session.get("username") is None:
         return redirect(url_for('login'))
     else:
-        return render_template("index.html", main="Home", navs=["Log Out"])
+        return render_template("index.html", main="Home", navs={"Log Out": "logout"})
+
+@app.route("/logout")
+def logout():
+    session["username"] = None
+    return redirect(url_for('login'))

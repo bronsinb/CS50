@@ -8,8 +8,11 @@
 
 {% block body %}
     <div class="card">
-        <form>
-            <a href="{{ url_for('index') }}" type="button" class="btn-success">{{ main }}</a>
+        <form action="{{ url_for('authenticate') }}" method="post">
+            {% for input in inputs %}
+                <input name="{{ inputs[input] }}" placeholder="{{ input }}" type="{{ inputs[input] }}">
+            {% endfor %}
+            <button name="auth_type" value="{{ main }}" class="btn-success">{{ main }}</button>
         </form>
     </div>
 {% endblock %}
