@@ -7,12 +7,14 @@
 {% endblock %}
 
 {% block body %}
-    <div class="card">
+    <div class="card auth">
         <form action="{{ url_for('authenticate') }}" method="post">
             {% for input in inputs %}
-                <input name="{{ inputs[input] }}" placeholder="{{ input }}" type="{{ inputs[input] }}">
+                <div class="form-group">
+                    <input class="form-control" name="{{ inputs[input] }}" placeholder="{{ input }}" type="{{ inputs[input] }}">
+                </div>
             {% endfor %}
-            <button name="auth_type" value="{{ main }}" class="btn-success">{{ main }}</button>
+            <button name="auth_type" value="{{ main }}" type="submit" class="btn btn-success">{{ main }}</button>
         </form>
     </div>
 {% endblock %}

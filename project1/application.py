@@ -57,22 +57,25 @@ def authenticate():
 
     #Check if user exists
     if auth_type == "Log In":
-        if db.execute("SELECT * FROM users WHERE username = :username AND passhash = :passhash", 
-            {"username": username, "passhash": passhash}).rowcount == 0:
+        user = db.execute("SELECT * FROM users WHERE username = :username AND passhash = :passhash", 
+            {"username": username, "passhash": passhash})
+
+        if user.rowcount == 0:
             return redirect(url_for('login'))
 
-        session["username"] = username
+        session["id"] = user.first()[0]
         return redirect(url_for('index'))
     
 
 @app.route("/")
 def index():
-    if session.get("username") is None:
+    if session.get("id") is None:
         return redirect(url_for('login'))
     else:
-        return render_template("index.html", main="Home", navs={"Log Out": "logout"})
+        books = db.execute("SELECT * FROM books").fetchall()
+        return render_template("index.html", main="Home", navs={"Log Out": "logout"}, books=books)
 
 @app.route("/logout")
 def logout():
-    session["username"] = None
+    session["id"] = None
     return redirect(url_for('login'))
