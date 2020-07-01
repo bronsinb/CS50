@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block title %}
+    {{ main }}
+{% endblock %}
+{% block heading %}
+    {{ main }}
+{% endblock %}
+
+{% block body %}
+    <div class="card auth">
+        <form action="{{ url_for('authenticate') }}" method="post">
+            {% for input in inputs %}
+                <div class="form-group">
+                    <input class="form-control" name="{{ inputs[input] }}" placeholder="{{ input }}" type="{{ inputs[input] }}">
+                </div>
+            {% endfor %}
+            <button name="auth_type" value="{{ main }}" type="submit" class="btn btn-success">{{ main }}</button>
+        </form>
+    </div>
+{% endblock %}
