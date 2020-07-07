@@ -4,9 +4,13 @@ import markdown2
 from . import util
 
 def index(request):
-    return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries()
-    })
+    if request.GET:
+        query = request.GET["q"]
+        return entry(request, query)
+    else:
+        return render(request, "encyclopedia/index.html", {
+            "entries": util.list_entries()
+        })
 
 def entry(request, entry):
     content = util.get_entry(entry)
