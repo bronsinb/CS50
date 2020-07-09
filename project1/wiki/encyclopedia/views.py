@@ -47,17 +47,46 @@ def add(request):
         form = AddEditForm(request.POST)
         if form.is_valid():
             title = form.cleaned_data["title"]
-            entry = form.cleaned_data["entry"]
-            f=open(f"../wiki/entries/{title}.md","w+")
-            f.write(entry)
-            f.close()
+            if util.get_entry(title) is not None:
+                return render(request, "encyclopedia/error.html", {
+                    "error": f"'{title}' Already Exists"
+                })
+            content = form.cleaned_data["entry"]
+            util.save_entry(title, content)
             return HttpResponseRedirect(reverse("index"))
         else:
             return render(request, "encyclopedia/addedit.html", {
+                "type": "Edit",
                 "form": form
             })
     else:
         return render(request, "encyclopedia/addedit.html", {
             "type": "Add",
             "form": AddEditForm()
+        })
+
+def edit(request):
+    if request.method == "POST":
+        form = AddEditForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            content = form.cleaned_data["entry"]
+            util.save_entry(title, content)
+            return HttpResponseRedirect(reverse("entry", args=[title]))
+        else:
+            return render(request, "encyclopedia/addedit.html", {
+                "type": "Edit",
+                "form": form
+            })
+    else:
+        title = request.GET["edit"]
+        content = util.get_entry(title)
+
+        form = AddEditForm()
+        form.fields["title"].initial = title
+        form.fields["entry"].initial = content
+
+        return render(request, "encyclopedia/addedit.html", {
+            "type": "Edit",
+            "form": form
         })
