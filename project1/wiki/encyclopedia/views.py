@@ -84,6 +84,7 @@ def edit(request):
 
         form = AddEditForm()
         form.fields["title"].initial = title
+        form.fields["title"].disabled = True
         form.fields["entry"].initial = content
 
         return render(request, "encyclopedia/addedit.html", {
