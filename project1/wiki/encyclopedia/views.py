@@ -53,7 +53,7 @@ def add(request):
                 })
             content = form.cleaned_data["entry"]
             util.save_entry(title, content)
-            return HttpResponseRedirect(reverse("index"))
+            return HttpResponseRedirect(reverse("entry", args=[title]))
         else:
             return render(request, "encyclopedia/addedit.html", {
                 "type": "Edit",
@@ -68,6 +68,7 @@ def add(request):
 def edit(request):
     if request.method == "POST":
         form = AddEditForm(request.POST)
+        print(request.POST)
         if form.is_valid():
             title = form.cleaned_data["title"]
             content = form.cleaned_data["entry"]
@@ -83,11 +84,12 @@ def edit(request):
         content = util.get_entry(title)
 
         form = AddEditForm()
+        form.fields["title"].widget.attrs['style'] = 'display:none;'
+        form.fields["title"].label = ""
         form.fields["title"].initial = title
-        form.fields["title"].disabled = True
         form.fields["entry"].initial = content
 
         return render(request, "encyclopedia/addedit.html", {
-            "type": "Edit",
+            "type": f"Edit {title}",
             "form": form
         })
