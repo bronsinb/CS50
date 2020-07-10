@@ -7,7 +7,9 @@
 {% block body %}
     <form method="post">
         {% csrf_token %}
-        {{ form }}
+        {{ form.title }}
+        <br/>
+        {{ form.entry }}
         <br/>
         <button type="submit">{{ type }}</button>
     </form>

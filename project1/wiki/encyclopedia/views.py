@@ -9,7 +9,7 @@ from . import util
 
 #Form that handles adding and editing
 class AddEditForm(forms.Form):
-    title = forms.CharField()
+    title = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Title'}))
     entry = forms.CharField(label="", widget=forms.Textarea(attrs={'placeholder': "Type Entry Here"}))
 
 def index(request):
