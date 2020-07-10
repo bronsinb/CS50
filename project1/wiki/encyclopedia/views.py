@@ -7,6 +7,7 @@ import random
 
 from . import util
 
+#Form that handles adding and editing
 class AddEditForm(forms.Form):
     title = forms.CharField()
     entry = forms.CharField(label="", widget=forms.Textarea(attrs={'placeholder': "Type Entry Here"}))
@@ -14,7 +15,21 @@ class AddEditForm(forms.Form):
 def index(request):
     if request.GET:
         query = request.GET["q"]
-        return entry(request, query)
+
+        #Check if query matches the name of an encyclopedia entry
+        content = util.get_entry(query)
+        if content != None:
+            return entry(request, query)
+
+        #List Entries that contain query in name or display error
+        searched = list(filter(lambda entry: query in entry, util.list_entries()))
+        if not searched:
+            return render(request, "encyclopedia/error.html", {
+                "error": f"'{query}' Not Found"
+            })
+        return render(request, "encyclopedia/index.html", {
+            "entries": searched
+        })
     else:
         return render(request, "encyclopedia/index.html", {
             "entries": util.list_entries()
@@ -33,6 +48,7 @@ def entry(request, entry):
         "content": html
     })
 
+#Generates a random entry page
 def rand(request):
     title = random.choice(util.list_entries())
     content = util.get_entry(title)
@@ -47,6 +63,8 @@ def add(request):
         form = AddEditForm(request.POST)
         if form.is_valid():
             title = form.cleaned_data["title"]
+
+            #Check for no duplicates
             if util.get_entry(title) is not None:
                 return render(request, "encyclopedia/error.html", {
                     "error": f"'{title}' Already Exists"
@@ -84,6 +102,8 @@ def edit(request):
         content = util.get_entry(title)
 
         form = AddEditForm()
+
+        #Title field hidden so user doesn't change title while editing
         form.fields["title"].widget.attrs['style'] = 'display:none;'
         form.fields["title"].label = ""
         form.fields["title"].initial = title
