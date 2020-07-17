@@ -1,7 +1,17 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <div class="padding">
+        <h2>Active Listings</h2>
 
-    TODO
+        <div class="container-fluid">
+            {% for listing in listings %}
+                {% if listing.status %}
+                <div class="card">
+                    Name: {{ listing.item }}, Price: ${{ listing.price }} By: @{{listing.user.username}}
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

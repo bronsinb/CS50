@@ -4,11 +4,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Listing
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.all()
+    })
 
 
 def login_view(request):
@@ -38,6 +40,8 @@ def logout_view(request):
 
 def register(request):
     if request.method == "POST":
+        first = request.POST["firstname"]
+        last = request.POST["lastname"]
         username = request.POST["username"]
         email = request.POST["email"]
 
@@ -52,6 +56,8 @@ def register(request):
         # Attempt to create new user
         try:
             user = User.objects.create_user(username, email, password)
+            user.first_name = first
+            user.last_name = last
             user.save()
         except IntegrityError:
             return render(request, "auctions/register.html", {
