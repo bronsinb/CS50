@@ -6,9 +6,9 @@
 
         <div class="container-fluid">
             {% for listing in listings %}
-                {% if listing.status %}
+                {% if listing.active %}
                 <div class="card">
-                    Name: {{ listing.item }}, Price: ${{ listing.price }} By: @{{listing.user.username}}
+                    Name: {{ listing.title }}, Starting Price: ${{ listing.price }} Current: ${{ listing.current_bid}} By: @{{listing.user.username}}
                 </div>
                 {% endif %}
             {% endfor %}

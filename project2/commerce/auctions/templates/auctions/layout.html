@@ -24,12 +24,14 @@
                 </ul>
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
-                        <li class="navbar-text dropdown">
-                            Signed in as <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><strong>@{{ user.username }}</strong></a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{% url 'index' %}">Profile</a>
-                                <a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
-                            </div>
+                        <li class="nav-item">
+                            <a class="btn btn-light" href="{% url 'index' %}">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-light" href="{% url 'createlisting' %}">Create Listing</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-light" href="{% url 'logout' %}">Log Out</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
