@@ -22,10 +22,13 @@ class Listing(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def current_bid(self):
-        return self.bids.all().order_by('bid').last().bid
+        if self.bids.all():
+            return self.bids.all().order_by('bid').last().bid
+        return self.price
 
     def __str__(self):
-        return f"{self.title} (${self.price})"
+        current = self.current_bid()
+        return f"{self.title} (Starting ${self.price}) (Current ${current})"
 
 class Bid(models.Model):
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids")
@@ -33,7 +36,7 @@ class Bid(models.Model):
     bid = models.DecimalField(max_digits=12, decimal_places=2)
 
     def __str__(self):
-        return f"{self.bid} from @{self.bidder.username} on  {self.listing.title}"
+        return f"{self.bid} from @{self.bidder.username} on {self.listing.title}"
 
 class Comment(models.Model):
     commentor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
