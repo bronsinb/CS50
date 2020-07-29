@@ -26,6 +26,11 @@ class Listing(models.Model):
             return self.bids.all().order_by('bid').last().bid
         return self.price
 
+    def all_comments(self):
+        if self.comments.all():
+            return self.comments.all()
+        return list()
+
     def __str__(self):
         current = self.current_bid()
         return f"{self.title} (Starting ${self.price}) (Current ${current})"
@@ -44,4 +49,4 @@ class Comment(models.Model):
     comment = models.CharField(max_length=500)
 
     def __str__(self):
-        return f"{self.comment} from @{self.commentor.username} on  {self.listing.item}"
+        return f"{self.comment} from @{self.commentor.username} on  {self.listing.title}"

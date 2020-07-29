@@ -16,7 +16,8 @@ def listing(request, listing_id):
     try:
         listing = Listing.objects.get(id=listing_id)
         return render(request, "auctions/listing.html", {
-                "listing": listing
+                "listing": listing,
+                "comments": listing.all_comments,
             })
     except Listing.DoesNotExist:
         raise Http404("Listing not found.")
