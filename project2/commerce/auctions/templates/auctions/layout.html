@@ -21,6 +21,9 @@
                     <li class="nav-item">
                         <a class="btn btn-light" href="{% url 'index' %}">Active Listings</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="btn btn-light" href="{% url 'index' %}">Categories</a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}

@@ -1,0 +1,21 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2 class="padding">{{ category }}</h2>
+
+    <div class="d-flex flex-wrap">
+        {% for listing in listings %}
+            {% if listing.active %}
+            <div class="padding">
+                <a class="card padding" width="220px" href="{% url 'listing' listing.id %}">
+                    <img src="{{listing.image}}" class="listing_image"><br>
+                    <h4>{{ listing.title }}</h4>
+                    <p>Starting Price: ${{ listing.price }} <br>
+                    Current Bid: ${{ listing.current_bid}} <br>
+                    By: @{{listing.user.username}}</p>
+                </a>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}

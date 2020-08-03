@@ -6,10 +6,15 @@ from django.urls import reverse
 
 from .models import User, Listing, Category
 
-
 def index(request):
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all()
+        "listings": Listing.objects.all(),
+    })
+
+def category(request, category):
+    return render(request, "auctions/category.html", {
+        "category": category,
+        "categories": Category.objects.all(),
     })
 
 def listing(request, listing_id):
