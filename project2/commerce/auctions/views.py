@@ -12,9 +12,19 @@ def index(request):
     })
 
 def category(request, category):
+    if request.method == "POST":
+        return HttpResponseRedirect(reverse("category", args=[request.POST["cat"]]))
+        
+    categories = Category.objects.exclude(name=category).all()
+    cat = Category.objects.filter(name=category).first()
+
+    if cat == None:
+        return HttpResponseRedirect(reverse("category", args=[categories[0].name]))
+
     return render(request, "auctions/category.html", {
         "category": category,
-        "categories": Category.objects.all(),
+        "listings": Listing.objects.filter(category=cat).all(),
+        "categories": categories,
     })
 
 def listing(request, listing_id):
