@@ -12,6 +12,15 @@ def index(request):
         "name": "Active Listings"
     })
 
+def watchlist(request):
+    if request.user.is_authenticated:
+        return render(request, "auctions/index.html", {
+            "listings": request.user.watchlists.all(),
+            "name": "Watchlist"
+        })
+    
+    return HttpResponseRedirect(reverse("login"))
+
 def category(request, category):
     if request.method == "POST":
         return HttpResponseRedirect(reverse("category", args=[request.POST["cat"]]))

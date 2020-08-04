@@ -24,6 +24,11 @@
                     <li class="nav-item">
                         <a class="btn btn-light" href="{% url 'category' 'None' %}">Categories</a>
                     </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="btn btn-light" href="{% url 'watchlist' %}">Watchlist</a>
+                        </li>
+                    {% endif %}
                 </ul>
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
