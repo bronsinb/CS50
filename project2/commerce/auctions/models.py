@@ -20,6 +20,7 @@ class Listing(models.Model):
     price = models.DecimalField(max_digits=12, decimal_places=2)
     active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
+    watchlist = models.ManyToManyField(User, blank=True, related_name="watchlists")
 
     def current_bid(self):
         if self.bids.all():

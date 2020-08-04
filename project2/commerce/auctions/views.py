@@ -9,6 +9,7 @@ from .models import User, Listing, Category
 def index(request):
     return render(request, "auctions/index.html", {
         "listings": Listing.objects.all(),
+        "name": "Active Listings"
     })
 
 def category(request, category):
