@@ -7,7 +7,7 @@
             <h2><strong>{{ listing.title }}</strong></h2>
             <p>{{ listing.description }}</p>
             <h6>By: <a href="{% url 'index' %}"><strong>@{{ listing.user.username }}</strong></a></h6>
-            <h6>Category: <a href="{% url 'index' %}"><strong>{{ listing.category.name }}</strong></a></h6>
+            <h6>Category: <a href="{% url 'category' listing.category.name  %}"><strong>{{ listing.category.name }}</strong></a></h6>
             <h4>Current Bid: <strong>${{ listing.current_bid}}</strong></h4>
             <h6>Starting Price: <strong>${{ listing.price }}</strong></h6>
             <div>
