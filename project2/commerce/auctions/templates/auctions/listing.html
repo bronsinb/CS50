@@ -5,25 +5,26 @@
         <img class="listing_page_image padding" src="{{ listing.image }}"/>
         <div class="padding">
             <h2><strong>{{ listing.title }}</strong></h2>
+            <form>
+                <a href="#" class="badge badge-light">Add to Watchlist</a>
+            </form>
             <p>{{ listing.description }}</p>
             <h6>By: <a href="{% url 'index' %}"><strong>@{{ listing.user.username }}</strong></a></h6>
             <h6>Category: <a href="{% url 'category' listing.category.name  %}"><strong>{{ listing.category.name }}</strong></a></h6>
             <h4>Current Bid: <strong>${{ listing.current_bid}}</strong></h4>
             <h6>Starting Price: <strong>${{ listing.price }}</strong></h6>
-            <div>
-                <form class="form-inline">
-                    {% if user.is_authenticated %}
-                        {% if user != listing.user %}
-                            <div class="form-group mb-2">
-                                <input class="form-control" type="number" required name="price" min="0" step=".01" value="{{ listing.current_bid}}" min="{{ listing.current_bid }}" pattern="^\d*(\.\d{0,2})?$"> 
-                            </div>
-                            <button class="btn btn-primary  mx-sm-2 mb-2" type="submit">Bid</button>
-                        {% endif %}
-                    {% else %}
-                        <a class="btn btn-primary mb-2" href="{% url 'login' %}">Log In to Bid</a>
+            <form class="form-inline">
+                {% if user.is_authenticated %}
+                    {% if user != listing.user %}
+                        <div class="form-group mb-2">
+                            <input class="form-control" type="number" required name="price" min="0" step=".01" value="{{ listing.current_bid}}" min="{{ listing.current_bid }}" pattern="^\d*(\.\d{0,2})?$"> 
+                        </div>
+                        <button class="btn btn-primary  mx-sm-2 mb-2" type="submit">Bid</button>
                     {% endif %}
-                </form>
-            </div>
+                {% else %}
+                    <a class="btn btn-primary mb-2" href="{% url 'login' %}">Log In to Bid</a>
+                {% endif %}
+            </form>
         </div>
     </div>
     <h3 class="padding">Comments</h3>
