@@ -4,22 +4,32 @@
     <div class="d-flex flex-wrap">
         <img class="listing_page_image padding" src="{{ listing.image }}"/>
         <div class="padding">
-            <h2><strong>{{ listing.title }}</strong></h2>
-            <form>
-                <a href="#" class="badge badge-light">Add to Watchlist</a>
+            <form class="form-inline" method="POST">
+                {% csrf_token %}
+                <h2 class="form-group mb-2"><strong>{{ listing.title }}</strong></h2>
+                {% if user != listing.user %}
+                    {% if watchlisted %}
+                        <button type="submit" type="button" class="btn btn-danger mx-sm-2 mb-2 small_button">X Watchlist</button>
+                    {% else %}
+                        <button type="submit" type="button" class="btn btn-success mx-sm-2 mb-2 small_button">+ Watchlist</button>
+                    {% endif %}
+                {% endif %}
+                <input type="hidden" name="action" value="watchlist"/>
             </form>
             <p>{{ listing.description }}</p>
             <h6>By: <a href="{% url 'index' %}"><strong>@{{ listing.user.username }}</strong></a></h6>
             <h6>Category: <a href="{% url 'category' listing.category.name  %}"><strong>{{ listing.category.name }}</strong></a></h6>
             <h4>Current Bid: <strong>${{ listing.current_bid}}</strong></h4>
             <h6>Starting Price: <strong>${{ listing.price }}</strong></h6>
-            <form class="form-inline">
+            <form class="form-inline" method="POST">
+                {% csrf_token %}
                 {% if user.is_authenticated %}
                     {% if user != listing.user %}
                         <div class="form-group mb-2">
-                            <input class="form-control" type="number" required name="price" min="0" step=".01" value="{{ listing.current_bid}}" min="{{ listing.current_bid }}" pattern="^\d*(\.\d{0,2})?$"> 
+                            <input class="form-control" type="number" required name="price" step=".01" placeholder="Ex. {{ listing.current_bid}}" min="{{ listing.next_bid }}" pattern="^\d*(\.\d{0,2})?$"> 
                         </div>
                         <button class="btn btn-primary  mx-sm-2 mb-2" type="submit">Bid</button>
+                        <input type="hidden" name="action" value="bid"/>
                     {% endif %}
                 {% else %}
                     <a class="btn btn-primary mb-2" href="{% url 'login' %}">Log In to Bid</a>
@@ -41,13 +51,15 @@
         {% endfor %}
     </div>
     <div>
-        <form >
+        <form method="POST">
+            {% csrf_token %}
             {% if user.is_authenticated %}
                 {% if user != listing.user %}
                     <div class="form-group mx-sm-2  mb-2">
                         <textarea class="form-control" required name="comment" placeholder="Comment"></textarea>
                     </div>
                     <button class="btn btn-primary mx-sm-2 mb-2" type="submit">Post</button>
+                    <input type="hidden" name="action" value="comment"/>
                 {% endif %}
             {% endif %}
         </form>

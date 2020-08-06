@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Listing, Category
+from .models import User, Listing, Category, Bid, Comment
 
 def index(request):
     return render(request, "auctions/index.html", {
@@ -38,12 +38,30 @@ def category(request, category):
     })
 
 def listing(request, listing_id):
-    try:
+    try: 
         listing = Listing.objects.get(id=listing_id)
-        return render(request, "auctions/listing.html", {
-                "listing": listing,
-                "comments": listing.all_comments,
-            })
+        if request.method == "POST":
+            if request.POST["action"] == "watchlist":
+                if listing in request.user.watchlists.all():
+                    request.user.watchlists.remove(listing)
+                else:
+                    request.user.watchlists.add(listing)
+            if request.POST["action"] == "bid":
+                Bid(bid=request.POST["price"], bidder=request.user, listing=listing).save()
+            if request.POST["action"] == "comment":
+                Comment(listing=listing, commentor=request.user, comment=request.POST["comment"]).save()
+
+            return render(request, "auctions/listing.html", {
+                    "listing": listing,
+                    "comments": listing.all_comments,
+                    "watchlisted": listing in request.user.watchlists.all()
+                })
+        else: 
+            return render(request, "auctions/listing.html", {
+                    "listing": listing,
+                    "comments": listing.all_comments,
+                    "watchlisted": listing in request.user.watchlists.all()
+                })
     except Listing.DoesNotExist:
         raise Http404("Listing not found.")
 

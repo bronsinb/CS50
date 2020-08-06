@@ -27,6 +27,14 @@ class Listing(models.Model):
             return self.bids.all().order_by('bid').last().bid
         return self.price
 
+    def current_bidder(self):
+        if self.bids.all():
+            return self.bids.all().order_by('bid').last().bidder
+        return self.user.username
+
+    def next_bid(self):
+        return float(self.current_bid()) + 0.01
+
     def all_comments(self):
         if self.comments.all():
             return self.comments.all()
