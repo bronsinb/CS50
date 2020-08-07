@@ -12,6 +12,16 @@ def index(request):
         "name": "Active Listings"
     })
 
+def profile(request, username):
+    user = User.objects.filter(username=username).first()
+    if user == None:
+        raise Http404("User not found.")
+
+    return render(request, "auctions/profile.html", {
+        "user_profile": user,
+        "listings": user.listings.all()
+    })
+
 def watchlist(request):
     if request.user.is_authenticated:
         return render(request, "auctions/index.html", {
@@ -60,11 +70,18 @@ def listing(request, listing_id):
                     "watchlisted": listing in request.user.watchlists.all()
                 })
         else: 
-            return render(request, "auctions/listing.html", {
-                    "listing": listing,
-                    "comments": listing.all_comments,
-                    "watchlisted": listing in request.user.watchlists.all()
-                })
+            if request.user.is_authenticated:
+                return render(request, "auctions/listing.html", {
+                        "listing": listing,
+                        "comments": listing.all_comments,
+                        "watchlisted": listing in request.user.watchlists.all()
+                    })
+            else:
+                return render(request, "auctions/listing.html", {
+                        "listing": listing,
+                        "comments": listing.all_comments,
+                        "watchlisted": False
+                    })
     except Listing.DoesNotExist:
         raise Http404("Listing not found.")
 

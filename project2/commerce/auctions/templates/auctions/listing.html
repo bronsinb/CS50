@@ -7,50 +7,58 @@
             <form class="form-inline" method="POST">
                 {% csrf_token %}
                 <h2 class="form-group mb-2"><strong>{{ listing.title }}</strong></h2>
-                {% if user != listing.user %}
-                    {% if watchlisted %}
-                        <button type="submit" type="button" class="btn btn-danger mx-sm-2 mb-2 small_button">X Watchlist</button>
-                    {% else %}
-                        <button type="submit" type="button" class="btn btn-success mx-sm-2 mb-2 small_button">+ Watchlist</button>
+                {% if user.is_authenticated %}
+                    {% if user != listing.user %}
+                        {% if watchlisted %}
+                            <button type="submit" type="button" class="btn btn-danger mx-sm-2 mb-2 small_button">X Watchlist</button>
+                        {% else %}
+                            <button type="submit" type="button" class="btn btn-success mx-sm-2 mb-2 small_button">+ Watchlist</button>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
                 <input type="hidden" name="action" value="watchlist"/>
             </form>
             <p>{{ listing.description }}</p>
-            <h6>By: <a href="{% url 'index' %}"><strong>@{{ listing.user.username }}</strong></a></h6>
+            <h6>By: <a href="{% url 'profile' listing.user.username %}"><strong>@{{ listing.user.username }}</strong></a></h6>
             <h6>Category: <a href="{% url 'category' listing.category.name  %}"><strong>{{ listing.category.name }}</strong></a></h6>
-            <h4>Current Bid: <strong>${{ listing.current_bid}}</strong> by <a href="{% url 'index' %}"><strong>@{{ listing.current_bidder }}</strong></a></h4>
-            <h6>Starting Price: <strong>${{ listing.price }}</strong></h6>
-            <form class="form-inline" method="POST">
-                {% csrf_token %}
-                {% if user.is_authenticated %}
-                    {% if user != listing.user %}
-                        <div class="form-group mb-2">
-                            <input class="form-control" type="number" required name="price" step=".01" placeholder="Ex. {{ listing.current_bid}}" min="{{ listing.next_bid }}" pattern="^\d*(\.\d{0,2})?$"> 
-                        </div>
-                        <button class="btn btn-primary  mx-sm-2 mb-2" type="submit">Bid</button>
-                        <input type="hidden" name="action" value="bid"/>
-                    {% else %}
-                        {% if listing.active %}
-                            <button type="submit" type="button" class="btn btn-success mx-sm-2 mb-2 small_button">Active</button>
+            {% if listing.active %}
+                <h4>Current Bid: <strong>${{ listing.current_bid}}</strong> by <a href="{% url 'index' %}"><strong>@{{ listing.current_bidder }}</strong></a></h4>
+                <h6>Starting Price: <strong>${{ listing.price }}</strong></h6>
+                <form class="form-inline" method="POST">
+                    {% csrf_token %}
+                    {% if user.is_authenticated %}
+                        {% if user != listing.user %}
+                            <div class="form-group mb-2">
+                                <input class="form-control" type="number" required name="price" step=".01" placeholder="Ex. {{ listing.current_bid}}" min="{{ listing.next_bid }}" pattern="^\d*(\.\d{0,2})?$"> 
+                            </div>
+                            <button class="btn btn-primary  mx-sm-2 mb-2" type="submit">Bid</button>
+                            <input type="hidden" name="action" value="bid"/>
                         {% else %}
-                            <button type="submit" type="button" class="btn btn-danger mx-sm-2 mb-2 small_button">Inactive</button>
+                            {% if listing.active %}
+                                <button type="submit" type="button" class="btn btn-success mx-sm-2 mb-2 small_button">Active</button>
+                            {% else %}
+                                <button type="submit" type="button" class="btn btn-danger mx-sm-2 mb-2 small_button">Inactive</button>
+                            {% endif %}
+                            <input type="hidden" name="action" value="status"/>
                         {% endif %}
-                        <input type="hidden" name="action" value="status"/>
+                    {% else %}
+                        <a class="btn btn-primary mb-2" href="{% url 'login' %}">Log In to Bid</a>
                     {% endif %}
-                {% else %}
-                    <a class="btn btn-primary mb-2" href="{% url 'login' %}">Log In to Bid</a>
-                {% endif %}
-            </form>
+                </form>
+            {% else %}
+                <div class="alert alert-danger" role="alert">
+                    Listing No Longer Active!
+                </div>
+            {% endif %}
         </div>
     </div>
     <h3 class="padding">Comments</h3>
     <div class="d-flex flex-wrap padding">
         {% for comment in comments %}
-            <a class="card padding">
-                <h5> {{ comment.comment }}</h5>
-                </h6>By: @{{comment.commentor.username}}</h6>
-            </a>
+            <div class="card padding">
+                <h5>{{ comment.comment }}</h5>
+                <h6>By: <a href="{% url 'profile' comment.commentor.username  %}">@{{comment.commentor.username}}</a></h6>
+            </div>
         {% empty %}
             <div class="alert alert-dark padding" role="alert">
                 No Comments

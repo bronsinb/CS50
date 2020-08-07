@@ -1,25 +1,31 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2 class="padding">{{ name }}</h2>
+    <h2 class="padding">{{ user_profile.first_name }} {{ user_profile.last_name }}</h2>
 
+    <h4 class="padding">Listings</h2>
     <div class="d-flex flex-wrap">
         {% for listing in listings %}
-            {% if listing.active %}
             <div class="padding">
                 <a class="card padding" width="220px" href="{% url 'listing' listing.id %}">
                     <img src="{{listing.image}}" class="listing_image"><br>
                     <h4>{{ listing.title }}</h4>
                     <p>Starting Price: ${{ listing.price }} <br>
                     Current Bid: ${{ listing.current_bid}} <br>
-                    By: @{{listing.user.username}}</p>
+                    By: @{{listing.user.username}}<br/>
+                    Status: 
+                    {% if listing.active %}
+                        Active
+                    {% else %}
+                        Inactive
+                    {% endif%}
+                    </p>
                 </a>
             </div>
-            {% endif %}
-            {% empty %}
+        {% empty %}
             <div class="padding">
                 <div class="alert alert-secondary" role="alert">
-                    No Listings in {{ name }}
+                    {{ user_profile.username }} has No Listings
                 </div>
             </div>
         {% endfor %}
