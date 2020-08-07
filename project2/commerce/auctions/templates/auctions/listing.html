@@ -30,6 +30,13 @@
                         </div>
                         <button class="btn btn-primary  mx-sm-2 mb-2" type="submit">Bid</button>
                         <input type="hidden" name="action" value="bid"/>
+                    {% else %}
+                        {% if listing.active %}
+                            <button type="submit" type="button" class="btn btn-success mx-sm-2 mb-2 small_button">Active</button>
+                        {% else %}
+                            <button type="submit" type="button" class="btn btn-danger mx-sm-2 mb-2 small_button">Inactive</button>
+                        {% endif %}
+                        <input type="hidden" name="action" value="status"/>
                     {% endif %}
                 {% else %}
                     <a class="btn btn-primary mb-2" href="{% url 'login' %}">Log In to Bid</a>

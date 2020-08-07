@@ -50,6 +50,9 @@ def listing(request, listing_id):
                 Bid(bid=request.POST["price"], bidder=request.user, listing=listing).save()
             if request.POST["action"] == "comment":
                 Comment(listing=listing, commentor=request.user, comment=request.POST["comment"]).save()
+            if request.POST["action"] == "status":
+                listing.active = (not listing.active)
+                listing.save()
 
             return render(request, "auctions/listing.html", {
                     "listing": listing,
