@@ -1,16 +1,16 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2 class="padding">{{ category }}</h2>
-    <form method="POST">
+    <form class="form-inline" method="POST">
         {% csrf_token %}
-        <select name="cat" id="cat">
+        <h2 class="padding form-group mb-2">{{ category }}</h2>
+        <select class="form-group mb-2" name="cat" id="cat">
             <option value="{{ category }}">{{ category }}</option>
             {% for cat in categories%}
                 <option value="{{ cat }}">{{ cat }}</option>
             {% endfor %}
         </select>
-        <button type="submit">Go</button>
+        <button class="btn btn-success mx-sm-2 mb-2 small_button" type="submit">Go</button>
     </form>
     <div class="d-flex flex-wrap padding">
         {% for listing in listings %}
