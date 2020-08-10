@@ -1,8 +1,9 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 from .models import User, Listing, Category, Bid, Comment
 
@@ -15,21 +16,23 @@ def index(request):
 def profile(request, username):
     user = User.objects.filter(username=username).first()
     if user == None:
-        raise Http404("User not found.")
+        return render(request, "auctions/index.html", {
+            "listings": Listing.objects.all(),
+            "name": "Active Listings",
+            "message": "User not found."
+        })
 
     return render(request, "auctions/profile.html", {
         "user_profile": user,
         "listings": user.listings.all()
     })
 
+@login_required(login_url='/login')
 def watchlist(request):
-    if request.user.is_authenticated:
-        return render(request, "auctions/index.html", {
-            "listings": request.user.watchlists.all(),
-            "name": "Watchlist"
-        })
-    
-    return HttpResponseRedirect(reverse("login"))
+    return render(request, "auctions/index.html", {
+        "listings": request.user.watchlists.all(),
+        "name": "Watchlist"
+    })
 
 def category(request, category):
     if request.method == "POST":
@@ -83,8 +86,13 @@ def listing(request, listing_id):
                         "watchlisted": False
                     })
     except Listing.DoesNotExist:
-        raise Http404("Listing not found.")
+        return render(request, "auctions/index.html", {
+            "listings": Listing.objects.all(),
+            "name": "Active Listings",
+            "message": "Listing Not Found"
+        })
 
+@login_required(login_url='/login')
 def create_listing(request):
     if request.method == "POST":
         title = request.POST["title"]
@@ -93,7 +101,10 @@ def create_listing(request):
         url = request.POST["image"]
         category = Category.objects.get(name=request.POST["category"])
 
-        listing = Listing(user=request.user, title=title, description=description, category=category, image=url, price=price)
+        if url == "":
+            listing = Listing(user=request.user, title=title, description=description, category=category, price=price)
+        else:
+            listing = Listing(user=request.user, title=title, description=description, category=category, image=url, price=price)
         
         listing.save()
         return HttpResponseRedirect(reverse("index"))

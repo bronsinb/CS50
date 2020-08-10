@@ -16,7 +16,7 @@ class Listing(models.Model):
     title = models.CharField(max_length=128)
     description = models.CharField(max_length=1000)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="listings")
-    image = models.CharField(max_length=2000)
+    image = models.CharField(max_length=2000, default="https://sciences.ucf.edu/psychology/wp-content/uploads/sites/63/2019/09/No-Image-Available.png")
     price = models.DecimalField(max_digits=12, decimal_places=2)
     active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -30,7 +30,7 @@ class Listing(models.Model):
     def current_bidder(self):
         if self.bids.all():
             return self.bids.all().order_by('bid').last().bidder
-        return self.user.username
+        return self.user
 
     def next_bid(self):
         return float(self.current_bid()) + 0.01

@@ -22,7 +22,11 @@
             <h6>By: <a href="{% url 'profile' listing.user.username %}"><strong>@{{ listing.user.username }}</strong></a></h6>
             <h6>Category: <a href="{% url 'category' listing.category.name  %}"><strong>{{ listing.category.name }}</strong></a></h6>
             {% if listing.active %}
-                <h4>Current Bid: <strong>${{ listing.current_bid}}</strong> by <a href="{% url 'index' %}"><strong>@{{ listing.current_bidder }}</strong></a></h4>
+                {% if listing.current_bidder == listing.user %}
+                    <h4>No Bids</h4>
+                {% else %}
+                    <h4>Current Bid: <strong>${{ listing.current_bid}}</strong> by <a href="{% url 'index' %}"><strong>@{{ listing.current_bidder }}</strong></a></h4>
+                {% endif %}
                 <h6>Starting Price: <strong>${{ listing.price }}</strong></h6>
                 <form class="form-inline" method="POST">
                     {% csrf_token %}
@@ -46,6 +50,11 @@
                     {% endif %}
                 </form>
             {% else %}
+                {% if user == listing.current_bidder %}
+                    <div class="alert alert-success" role="alert">
+                        You Have Won the Auction for this Item!
+                    </div>
+                {% endif %}
                 <div class="alert alert-danger" role="alert">
                     Listing No Longer Active!
                 </div>

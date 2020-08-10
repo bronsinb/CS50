@@ -1,11 +1,17 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    {% if message %}
+        <div class="alert alert-danger" role="alert">
+            {{ message }}
+        </div>
+    {% endif %}
+
     <h2 class="padding">{{ name }}</h2>
 
     <div class="d-flex flex-wrap">
         {% for listing in listings %}
-            {% if listing.active %}
+            {% if listing.active or name == "Watchlist"%}
             <div class="padding">
                 <a class="card padding" width="220px" href="{% url 'listing' listing.id %}">
                     <img src="{{listing.image}}" class="listing_image"><br>
