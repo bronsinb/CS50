@@ -69,7 +69,7 @@ function add_email_element(email){
   // Create new email element
   const email_element = document.createElement('div');
   email_element.className = 'email';
-  email_element.innerHTML = `${email.subject} <button class="btn btn-secondary archive">Archive</button>`;
+  email_element.innerHTML = `${email.sender} ${email.subject} <button class="btn btn-secondary archive">Archive</button>`;
 
   // Append It
   document.querySelector('#emails-view').append(email_element);
