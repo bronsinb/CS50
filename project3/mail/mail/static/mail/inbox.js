@@ -53,4 +53,24 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+  fetch(`/emails/${mailbox}`)
+  .then(response => response.json())
+  .then(emails => {
+      // Print emails
+      console.log(emails);
+
+      //Display Emails
+      emails.forEach(add_email_element);
+  });
+}
+
+function add_email_element(email){
+  // Create new email element
+  const email_element = document.createElement('div');
+  email_element.className = 'email';
+  email_element.innerHTML = `${email.subject} <button class="btn btn-secondary archive">Archive</button>`;
+
+  // Append It
+  document.querySelector('#emails-view').append(email_element);
 }
