@@ -63,13 +63,33 @@ function load_mailbox(mailbox) {
       //Display Emails
       emails.forEach(add_email_element);
   });
+
+  // If hide button is clicked, delete the post
+  document.addEventListener('click', event => {
+      const element = event.target;
+      if (element.className === "btn btn-secondary archive") {
+          element.parentElement.style.animationPlayState = 'running';
+          element.parentElement.addEventListener('animationend', () =>  {
+              element.parentElement.remove();
+              archive_mail(element.dataset.id)
+          });
+      }
+  });
+}
+function archive_mail(email_num){
+  fetch(`/emails/${email_num}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+        archived: true
+    })
+  })
 }
 
 function add_email_element(email){
   // Create new email element
   const email_element = document.createElement('div');
   email_element.className = 'email';
-  email_element.innerHTML = `${email.sender} ${email.subject} <button class="btn btn-secondary archive">Archive</button>`;
+  email_element.innerHTML = `<button data-id="${email.id}" class="btn btn-secondary archive"><i class="fa fa-archive"></i></button> ${email.sender} ${email.subject}`;
 
   // Append It
   document.querySelector('#emails-view').append(email_element);
