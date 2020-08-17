@@ -50,7 +50,7 @@ function load_mailbox(mailbox) {
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
-
+  
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
@@ -61,13 +61,14 @@ function load_mailbox(mailbox) {
       console.log(emails);
 
       //Display Emails
-      emails.forEach(add_email_element);
+      emails.forEach(email => add_email_element(email, mailbox));
   });
 
   // If hide button is clicked, delete the post
   document.addEventListener('click', event => {
       const element = event.target;
       if (element.className === "btn btn-secondary archive") {
+        if (element.dataset.mailbox !== "sent"){
           element.parentElement.style.animationPlayState = 'running';
           element.parentElement.addEventListener('animationend', () =>  {
               element.parentElement.remove();
@@ -78,6 +79,7 @@ function load_mailbox(mailbox) {
                 archive_mail(element.dataset.id, true)
               }
           });
+        }
       }
   });
 }
@@ -92,17 +94,17 @@ function archive_mail(email_num, action){
   })
 }
 
-function add_email_element(email){
+function add_email_element(email, mailbox){
   // Create new email element
   const email_element = document.createElement('div');
   email_element.className = 'email';
-  var html = `<button data-archive=${email.archived} data-id="${email.id}" class="btn btn-secondary archive">`;
+  var html = `<button data-mailbox="${mailbox}" data-archive="${email.archived}" data-id="${email.id}" class="btn btn-secondary archive">`;
   if (email.archived){
     html += `<i class="fa fa-remove">`;
   } else {
     html += `<i class="fa fa-archive">`;
   }
-  html += `</i></button> ${email.sender} ${email.subject}`;
+  html += `</i></button> ${email.sender} - <strong>${email.subject}</strong>`;
 
   email_element.innerHTML = html;
   // Append It
