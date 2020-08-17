@@ -71,16 +71,23 @@ function load_mailbox(mailbox) {
           element.parentElement.style.animationPlayState = 'running';
           element.parentElement.addEventListener('animationend', () =>  {
               element.parentElement.remove();
-              archive_mail(element.dataset.id)
+              console.log(element.dataset.archive);
+              if (element.dataset.archive == "true"){
+                archive_mail(element.dataset.id, false);
+              } else {
+                archive_mail(element.dataset.id, true)
+              }
           });
       }
   });
 }
-function archive_mail(email_num){
+
+function archive_mail(email_num, action){
+  console.log(action);
   fetch(`/emails/${email_num}`, {
     method: 'PUT',
     body: JSON.stringify({
-        archived: true
+        archived: action
     })
   })
 }
@@ -89,8 +96,15 @@ function add_email_element(email){
   // Create new email element
   const email_element = document.createElement('div');
   email_element.className = 'email';
-  email_element.innerHTML = `<button data-id="${email.id}" class="btn btn-secondary archive"><i class="fa fa-archive"></i></button> ${email.sender} ${email.subject}`;
+  var html = `<button data-archive=${email.archived} data-id="${email.id}" class="btn btn-secondary archive">`;
+  if (email.archived){
+    html += `<i class="fa fa-remove">`;
+  } else {
+    html += `<i class="fa fa-archive">`;
+  }
+  html += `</i></button> ${email.sender} ${email.subject}`;
 
+  email_element.innerHTML = html;
   // Append It
   document.querySelector('#emails-view').append(email_element);
 }
