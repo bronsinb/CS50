@@ -150,8 +150,9 @@ function load_email(email){
 
   var html =`<h4 class="card-title">${email.subject}</h4><h6 class="card-subtitle mb-2">${email.sender}</h6><h6 class="card-subtitle mb-2 text-muted">To: `;
   email.recipients.forEach(recipient => html += `${recipient}, `);
-  html = html.substring(0, html.length - 2) + '</h6><hr/>';
+  html = html.substring(0, html.length - 2) + `</h6><hr/>`;
   html += `<p class="card-text">${email.body}</p>`;
+  html += `<a href="#" class="card-link">Reply</a>`;
   original_email.innerHTML = html;
   email_element.append(original_email);
 
