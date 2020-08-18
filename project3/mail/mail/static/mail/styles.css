@@ -26,6 +26,10 @@ textarea {
     }
 } 
 
+.vertical-center {
+    margin-top: auto;
+    margin-bottom: auto;
+}
 
 .email {
     padding-top: 8px;
@@ -33,10 +37,15 @@ textarea {
     padding-left: 12px;
     padding-right: 12px;
     margin-bottom: 10px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    transition: box-shadow 0.3s ease-in-out;
     border-radius: 10px;
     animation-name: archive;
     animation-duration: 1s;
     animation-fill-mode: forwards;
     animation-play-state: paused;
+}
+
+.email:hover{
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
