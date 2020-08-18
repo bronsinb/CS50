@@ -68,18 +68,16 @@ function load_mailbox(mailbox) {
   document.addEventListener('click', event => {
       const element = event.target;
       if (element.className === "btn btn-secondary archive") {
-        if (element.dataset.mailbox !== "sent"){
-          element.parentElement.style.animationPlayState = 'running';
-          element.parentElement.addEventListener('animationend', () =>  {
-              element.parentElement.remove();
-              console.log(element.dataset.archive);
-              if (element.dataset.archive == "true"){
-                archive_mail(element.dataset.id, false);
-              } else {
-                archive_mail(element.dataset.id, true)
-              }
-          });
-        }
+        element.parentElement.style.animationPlayState = 'running';
+        element.parentElement.addEventListener('animationend', () =>  {
+            element.parentElement.remove();
+            console.log(element.dataset.archive);
+            if (element.dataset.archive == "true"){
+              archive_mail(element.dataset.id, false);
+            } else {
+              archive_mail(element.dataset.id, true)
+            }
+        });
       }
   });
 }
@@ -97,16 +95,20 @@ function archive_mail(email_num, action){
 function add_email_element(email, mailbox){
   // Create new email element
   const email_element = document.createElement('div');
-  email_element.className = 'email';
-  var html = `<button data-mailbox="${mailbox}" data-archive="${email.archived}" data-id="${email.id}" class="btn btn-secondary archive">`;
-  if (email.archived){
-    html += `<i class="fa fa-remove">`;
-  } else {
-    html += `<i class="fa fa-archive">`;
+  email_element.className = 'email row';
+  var html = '';
+  if(mailbox !== 'sent'){
+    html = `<button data-mailbox="${mailbox}" data-archive="${email.archived}" data-id="${email.id}" class="btn btn-secondary archive">`;
+    if (email.archived){
+      html += `<i class="fa fa-remove"></i></button> `;
+    } else {
+      html += `<i class="fa fa-archive"></i></button> `;
+    }
   }
-  html += `</i></button> ${email.sender} - <strong>${email.subject}</strong>`;
+  html += `<div class="col"><strong>${email.subject}</strong><div>${email.sender}</div></div><div style="font-size: 12px;">${email.timestamp}</div>`;
 
   email_element.innerHTML = html;
+
   // Append It
   document.querySelector('#emails-view').append(email_element);
 }
