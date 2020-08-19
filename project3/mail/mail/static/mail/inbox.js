@@ -66,10 +66,10 @@ function load_mailbox(mailbox) {
       emails.forEach(email => add_email_element(email, mailbox));
   });
 
-  // If hide button is clicked, delete the post
+  // Click listener
   document.addEventListener('click', event => {
       const element = event.target;
-      if (element.className === "btn btn-secondary archive") {
+      if (element.className === "btn archive") {
         element.parentElement.style.animationPlayState = 'running';
         element.parentElement.addEventListener('animationend', () =>  {
             element.parentElement.remove();
@@ -152,9 +152,22 @@ function load_email(email){
   email.recipients.forEach(recipient => html += `${recipient}, `);
   html = html.substring(0, html.length - 2) + `</h6><hr/>`;
   html += `<p class="card-text">${email.body}</p>`;
-  html += `<a href="#" class="card-link">Reply</a>`;
+  html += `<button class="card-link reply" data-sender="${email.sender}" data-timestamp="${email.timestamp}" data-subject="${email.subject}" data-body="${email.body}">Reply</button>`;
   original_email.innerHTML = html;
   email_element.append(original_email);
+
+  // Click listener
+  document.addEventListener('click', event => {
+    const element = event.target;
+    if (element.className === "card-link reply") {
+      compose_email();
+      console.log(element.dataset.email);
+
+      document.querySelector('#compose-recipients').value = element.dataset.sender;
+      document.querySelector('#compose-subject').value = `Re: ${element.dataset.subject}`;
+      document.querySelector('#compose-body').value = `On ${element.dataset.timestamp} ${element.dataset.sender} wrote: ${element.dataset.body} \n.\n.\n.\n`;
+    }
+  });
 
   email_view.append(email_element);
 }
