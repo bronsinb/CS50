@@ -39,11 +39,14 @@ function send_email(event) {
         body: document.querySelector('#compose-body').value
     })
   })
-  .then(response => response.json())
+  .then(response => {
+    response.json();
+  })
   .then(result => {
       // Print result
       console.log(result);
   });
+  load_mailbox('sent');
 }
 
 function load_mailbox(mailbox) {
@@ -156,6 +159,8 @@ function load_email(email){
   original_email.innerHTML = html;
   email_element.append(original_email);
 
+  email_view.append(email_element);
+
   // Click listener
   document.addEventListener('click', event => {
     const element = event.target;
@@ -164,10 +169,10 @@ function load_email(email){
       console.log(element.dataset.email);
 
       document.querySelector('#compose-recipients').value = element.dataset.sender;
+      document.querySelector('#compose-recipients').disabled = true;
       document.querySelector('#compose-subject').value = `Re: ${element.dataset.subject}`;
+      document.querySelector('#compose-subject').disabled = true;
       document.querySelector('#compose-body').value = `On ${element.dataset.timestamp} ${element.dataset.sender} wrote: ${element.dataset.body} \n.\n.\n.\n`;
     }
   });
-
-  email_view.append(email_element);
 }
