@@ -39,14 +39,12 @@ function send_email(event) {
         body: document.querySelector('#compose-body').value
     })
   })
-  .then(response => {
-    response.json();
-  })
+  .then(response => response.json())
   .then(result => {
       // Print result
       console.log(result);
-  });
-  load_mailbox('sent');
+  })
+  .then(() => load_mailbox('sent'));
 }
 
 function load_mailbox(mailbox) {
@@ -68,23 +66,6 @@ function load_mailbox(mailbox) {
       //Display Emails
       emails.forEach(email => add_email_element(email, mailbox));
   });
-
-  // Click listener
-  document.addEventListener('click', event => {
-      const element = event.target;
-      if (element.className === "btn archive") {
-        element.parentElement.style.animationPlayState = 'running';
-        element.parentElement.addEventListener('animationend', () =>  {
-            element.parentElement.remove();
-            console.log(element.dataset.archive);
-            if (element.dataset.archive == "true"){
-              archive_mail(element.dataset.id, false);
-            } else {
-              archive_mail(element.dataset.id, true)
-            }
-        });
-      }
-  });
 }
 
 function archive_mail(email_num, action){
@@ -101,19 +82,38 @@ function add_email_element(email, mailbox){
   // Create new email element
   const email_element = document.createElement('div');
   email_element.className = 'email row';
-  email_element.onclick = () => {
-    load_email(email);
-  };
+
   var html = '';
   if(mailbox !== 'sent'){
-    html = `<button data-mailbox="${mailbox}" data-archive="${email.archived}" data-id="${email.id}" class="btn archive">`;
+    const button_element = document.createElement('button');
+    button_element.className = "col-auto btn archive";
+
     if (email.archived){
       html += `<i class="fa fa-remove"></i></button> `;
     } else {
       html += `<i class="fa fa-archive"></i></button> `;
     }
+
+    button_element.innerHTML = html;
+
+    button_element.addEventListener("click", function() {
+      console.log("Hi");
+      archive_mail(email.id, !email.archived);
+      const element = email_element.children[0];
+      element.parentElement.style.animationPlayState = 'running';
+      element.parentElement.addEventListener('animationend', () =>  {
+          element.parentElement.remove();
+      });  
+    });
+
+    email_element.append(button_element);
   }
-  html += `<div class="col vertical-center">`
+
+  // Create new email element
+  const text_element = document.createElement('div');
+  text_element.className = 'col-lg row';
+
+  html = `<div class="col vertical-center">`
   if (email.read){
     html += `<h5>${email.subject}</h5>`;
   } else {
@@ -121,9 +121,11 @@ function add_email_element(email, mailbox){
   }
 
   html += `<div>${email.sender}</div></div><div class="vertical-center">${email.timestamp}</div>`;
-  
 
-  email_element.innerHTML = html;
+  text_element.innerHTML += html;
+
+  text_element.addEventListener('click', () => load_email(email));
+  email_element.append(text_element);
 
   // Append It
   document.querySelector('#emails-view').append(email_element);
