@@ -65,6 +65,10 @@ function load_mailbox(mailbox) {
 
       //Display Emails
       emails.forEach(email => add_email_element(email, mailbox));
+
+      if(emails.length == 0){
+        add_empty_message(mailbox);
+      }
   });
 }
 
@@ -103,6 +107,9 @@ function add_email_element(email, mailbox){
       element.parentElement.style.animationPlayState = 'running';
       element.parentElement.addEventListener('animationend', () =>  {
           element.parentElement.remove();
+          if(document.querySelector('#emails-view').children.length == 1){
+            add_empty_message(mailbox);
+          }
       });  
     });
 
@@ -177,4 +184,14 @@ function load_email(email){
       document.querySelector('#compose-body').value = `On ${element.dataset.timestamp} ${element.dataset.sender} wrote: ${element.dataset.body} \n.\n.\n.\n`;
     }
   });
+}
+
+function add_empty_message(mailbox){
+  const alert_element = document.createElement('div');
+  alert_element.className = "alert alert-dark";
+  alert_element.role = "alert";
+
+  alert_element.innerHTML = `${mailbox.toUpperCase()} is Empty!`;
+
+  document.querySelector('#emails-view').append(alert_element);
 }
