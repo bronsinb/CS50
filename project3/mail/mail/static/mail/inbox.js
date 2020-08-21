@@ -22,6 +22,10 @@ function compose_email() {
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
 
+  // Enable Fields disabled by reply
+  document.querySelector('#compose-recipients').disabled = false;
+  document.querySelector('#compose-subject').disabled = false;
+
   // Get Compose Form
   const compose_form = document.querySelector("#compose-form");
 
@@ -43,17 +47,20 @@ function send_email(event) {
   .then(result => {
       // Print result
       console.log(result);
-  })
-  .then(() => load_mailbox('sent'));
+
+      load_mailbox('sent')
+  });
 }
 
 function load_mailbox(mailbox) {
-  
+  // Clear it
+  document.querySelector('#emails-view').innerHTML = '';
+
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
   document.querySelector('#email-view').style.display = 'none';
-  
+
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
@@ -72,14 +79,13 @@ function load_mailbox(mailbox) {
   });
 }
 
-function archive_mail(email_num, action){
-  console.log(action);
-  fetch(`/emails/${email_num}`, {
+function archive_mail(email){
+  fetch(`/emails/${email.id}`, {
     method: 'PUT',
     body: JSON.stringify({
-        archived: action
+        archived: !email.archived
     })
-  });
+  }).then((response) => load_mailbox('inbox'));
 }
 
 function add_email_element(email, mailbox){
@@ -87,29 +93,25 @@ function add_email_element(email, mailbox){
   const email_element = document.createElement('div');
   email_element.className = 'email row';
 
-  var html = '';
+  if (email.read){
+    email_element.style.backgroundColor = "lightgray";
+  }
+
   if(mailbox !== 'sent'){
     const button_element = document.createElement('button');
     button_element.className = "col-auto btn archive";
 
     if (email.archived){
-      html += `<i class="fa fa-remove"></i></button> `;
+      button_element.innerHTML  = `<i class="fa fa-remove"></i>`;
     } else {
-      html += `<i class="fa fa-archive"></i></button> `;
+      button_element.innerHTML = `<i class="fa fa-archive"></i>`;
     }
 
-    button_element.innerHTML = html;
-
     button_element.addEventListener("click", function() {
-      console.log("Hi");
-      archive_mail(email.id, !email.archived);
       const element = email_element.children[0];
       element.parentElement.style.animationPlayState = 'running';
       element.parentElement.addEventListener('animationend', () =>  {
-          element.parentElement.remove();
-          if(document.querySelector('#emails-view').children.length == 1){
-            add_empty_message(mailbox);
-          }
+          archive_mail(email);
       });  
     });
 
@@ -120,25 +122,18 @@ function add_email_element(email, mailbox){
   const text_element = document.createElement('div');
   text_element.className = 'col-lg row';
 
-  html = `<div class="col vertical-center">`
-  if (email.read){
-    html += `<h5>${email.subject}</h5>`;
-  } else {
-    html += `<h5><strong>${email.subject}</strong></h5>`;
-  }
+  text_element.innerHTML = `<div class="col vertical-center"><h5>${email.subject}</h5><div>${email.sender}</div></div><div class="vertical-center">${email.timestamp}</div>`;
 
-  html += `<div>${email.sender}</div></div><div class="vertical-center">${email.timestamp}</div>`;
-
-  text_element.innerHTML += html;
-
-  text_element.addEventListener('click', () => load_email(email));
+  text_element.addEventListener('click', () => load_email(email, mailbox));
   email_element.append(text_element);
 
   // Append It
   document.querySelector('#emails-view').append(email_element);
 }
 
-function load_email(email){
+function load_email(email, mailbox){
+  
+
   // Show the email view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
@@ -162,9 +157,19 @@ function load_email(email){
 
   var html =`<h4 class="card-title">${email.subject}</h4><h6 class="card-subtitle mb-2">${email.sender}</h6><h6 class="card-subtitle mb-2 text-muted">To: `;
   email.recipients.forEach(recipient => html += `${recipient}, `);
-  html = html.substring(0, html.length - 2) + `</h6><hr/>`;
-  html += `<p class="card-text">${email.body}</p>`;
-  html += `<button class="card-link reply" data-sender="${email.sender}" data-timestamp="${email.timestamp}" data-subject="${email.subject}" data-body="${email.body}">Reply</button>`;
+  html = html.substring(0, html.length - 2) + `</h6>`;
+  html += `<h6 style="font-size: 12px;" class="card-subtitle mb-2 text-muted">${email.timestamp}</h6><hr/>`;
+  html += `<p class="card-text">${email.body.split("\n").join("<br>")}</p>`;
+  html += `<button class="btn btn-link reply">Reply</button>`;
+  if(mailbox !== "sent"){
+    html += `<button class="btn btn-link archive">`;
+    if(email.archived){
+      html += `Unarchive</button>`;
+    } else {
+      html += `Archive</button>`;
+    }
+  }
+
   original_email.innerHTML = html;
   email_element.append(original_email);
 
@@ -173,15 +178,22 @@ function load_email(email){
   // Click listener
   document.addEventListener('click', event => {
     const element = event.target;
-    if (element.className === "card-link reply") {
+    if (element.className === "btn btn-link reply") {
       compose_email();
-      console.log(element.dataset.email);
 
-      document.querySelector('#compose-recipients').value = element.dataset.sender;
+      document.querySelector('#compose-recipients').value = email.sender;
       document.querySelector('#compose-recipients').disabled = true;
-      document.querySelector('#compose-subject').value = `Re: ${element.dataset.subject}`;
+      if(email.subject.includes("Re: ")){
+        document.querySelector('#compose-subject').value = `${email.subject}`;
+      } else {
+        document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+      }
       document.querySelector('#compose-subject').disabled = true;
-      document.querySelector('#compose-body').value = `On ${element.dataset.timestamp} ${element.dataset.sender} wrote: ${element.dataset.body} \n.\n.\n.\n`;
+      document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: \n ${email.body} \n.\n.\n.\n`;
+    }
+
+    if (element.className === "btn btn-link archive"){
+      archive_mail(email);
     }
   });
 }
