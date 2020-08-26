@@ -13,4 +13,13 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('#new-post-button').className = "btn btn-primary";
         }
     });
+
+    document.querySelector('#new-post-textarea').addEventListener("keyup", () => {
+        var count = document.querySelector('#new-post-textarea').value.length;
+        if(count > 280){
+            document.querySelector('#new-post-textarea').value = document.querySelector('#new-post-textarea').value.substring(0, 280);
+            count = 280;
+        }
+        document.querySelector('#counter').innerHTML = `${count}/280`;
+    });
 });

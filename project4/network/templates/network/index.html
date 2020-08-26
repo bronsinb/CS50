@@ -15,14 +15,30 @@
         <br>
         <div id="new-post" class="card">
             <div class="card-body">
-                <h5 class="card-title">New Post</h5>
-                <form>
-                    <textarea class="form-control" id="exampleFormControlTextarea5" rows="2"></textarea>
+                <form method="POST">
+                    {% csrf_token %}
+                    <h5 class="card-title">New Post</h5>        
+                    <textarea id="new-post-textarea" name="post" class="form-control" id="exampleFormControlTextarea5" rows="2"></textarea>
+                    <p id="counter">0/280</p>
+                    <button type="submit" class="btn btn-primary">Post</a>
                 </form>
-                <br>
-                <button type="submit" class="btn btn-primary">Post</a>
               </div>
         </div>
+
+        {% for post in posts %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.user.username }}</h5>
+                    <p class="card-text">{{ post.text }}</p>
+                    <button class="btn">{{ post.get_likes_num}} <i class="fa fa-heart"></i></button>
+                </div>
+            </div>
+            <br>
+        {% empty %}
+            <div class="alert alert-primary" role="alert">
+                No Posts!
+          </div>
+        {% endfor %}
     </div>
     
 {% endblock %}
