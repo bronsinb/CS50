@@ -1,4 +1,5 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
     <div class="container-fluid">
@@ -7,8 +8,25 @@
             <div class="col">
 
             </div>
-            <button class="btn btn-primary">New Post</button>
+            {% if user.is_authenticated %}
+                <button id="new-post-button" class="btn btn-primary">New Post</button>
+            {% endif %}
+        </div>
+        <br>
+        <div id="new-post" class="card">
+            <div class="card-body">
+                <h5 class="card-title">New Post</h5>
+                <form>
+                    <textarea class="form-control" id="exampleFormControlTextarea5" rows="2"></textarea>
+                </form>
+                <br>
+                <button type="submit" class="btn btn-primary">Post</a>
+              </div>
         </div>
     </div>
     
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
 {% endblock %}
