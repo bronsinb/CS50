@@ -33,8 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 element.children[0].style.color = "black";  
             }
             const tmp = element.children[0];
-            element.innerHTML = json['amount'] + " ";
+            element.innerHTML = "";
             element.append(tmp)
+            element.append(` ${json["amount"]}`)
         })
     }));
 });

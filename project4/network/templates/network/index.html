@@ -33,10 +33,13 @@
                     <h5 class="card-title">{{ post.user.username }}</h5>
                     <p class="card-text">{{ post.text }}</p>
                     {% if user.is_authenticated %}
+                        {% if user == post.user %}
+                            <button class="btn"><i class="fa fa-edit"></i></button>
+                        {% endif %}
                         {% if user in post.likes.all %}
-                            <button data-postid="{{ post.id }}" class="btn like">{{ post.get_likes_num}} <i style="color: red;" class="fa fa-heart"></i></button>
+                            <button data-postid="{{ post.id }}" class="btn like"><i style="color: red;" class="fa fa-heart"></i> {{ post.get_likes_num}}</button>
                         {% else %}
-                            <button data-postid="{{ post.id }}" class="btn like">{{ post.get_likes_num}} <i style="color: black;" class="fa fa-heart"></i></button>
+                            <button data-postid="{{ post.id }}" class="btn like"><i style="color: black;" class="fa fa-heart"></i> {{ post.get_likes_num}}</button>
                         {% endif %}
                     {% endif %}
                 </div>
