@@ -15,8 +15,10 @@ def index(request):
             post = Post(user=request.user, text=post)
             post.save()
 
+    posts = Post.objects.all().order_by('created').reverse()
+
     return render(request, "network/index.html", {
-        "posts": Post.objects.all().reverse()
+        "posts": posts
     })
 
 
