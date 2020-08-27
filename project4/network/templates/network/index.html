@@ -10,6 +10,8 @@
             </div>
             {% if user.is_authenticated %}
                 <button id="new-post-button" class="btn btn-primary">New Post</button>
+            {% else %}
+                <a href="{% url 'login' %}" id="new-post-button" class="btn btn-primary">Login</a>
             {% endif %}
         </div>
         <br>
@@ -30,7 +32,13 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ post.user.username }}</h5>
                     <p class="card-text">{{ post.text }}</p>
-                    <button class="btn">{{ post.get_likes_num}} <i class="fa fa-heart"></i></button>
+                    {% if user.is_authenticated %}
+                        {% if user in post.likes.all %}
+                            <button data-postid="{{ post.id }}" class="btn like">{{ post.get_likes_num}} <i style="color: red;" class="fa fa-heart"></i></button>
+                        {% else %}
+                            <button data-postid="{{ post.id }}" class="btn like">{{ post.get_likes_num}} <i style="color: black;" class="fa fa-heart"></i></button>
+                        {% endif %}
+                    {% endif %}
                 </div>
             </div>
             <br>

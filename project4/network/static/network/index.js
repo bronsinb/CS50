@@ -22,4 +22,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         document.querySelector('#counter').innerHTML = `${count}/280`;
     });
+
+    document.querySelectorAll('.btn.like').forEach((element) => element.addEventListener('click', () => {
+        fetch(`/like/${element.dataset.postid}`)
+        .then(response => response.json())
+        .then(json => {
+            if(json["like"]){
+                element.children[0].style.color = "red";  
+            } else {
+                element.children[0].style.color = "black";  
+            }
+            const tmp = element.children[0];
+            element.innerHTML = json['amount'] + " ";
+            element.append(tmp)
+        })
+    }));
 });
