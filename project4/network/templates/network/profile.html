@@ -1,0 +1,61 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <h3 class="col-xs">{{ profile.username }}</h3>
+            <div class="col">
+
+            </div>
+            {% if user.is_authenticated %}
+                {% if user != profile %}
+                    <button id="new-post-button" class="btn btn-primary">Follow</button>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" id="new-post-button" class="btn btn-primary">Login</a>
+            {% endif %}
+        </div>
+        <br>
+        <div id="new-post" class="card">
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <h5 class="card-title">New Post</h5>        
+                    <textarea id="new-post-textarea" name="post" class="form-control" id="exampleFormControlTextarea5" rows="2"></textarea>
+                    <p id="counter">0/280</p>
+                    <button type="submit" class="btn btn-primary">Post</a>
+                </form>
+              </div>
+        </div>
+
+        {% for post in posts %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.user.username }}</h5>
+                    <p class="card-text">{{ post.text }}</p>
+                    {% if user.is_authenticated %}
+                        {% if user == post.user %}
+                            <button data-postid="{{ post.id }}" data-post="{{ post.text }}" class="btn edit"><i class="fa fa-edit"></i></button>
+                        {% endif %}
+                        {% if user in post.likes.all %}
+                            <button data-postid="{{ post.id }}" class="btn like"><i style="color: red;" class="fa fa-heart"></i> {{ post.get_likes_num}}</button>
+                        {% else %}
+                            <button data-postid="{{ post.id }}" class="btn like"><i style="color: black;" class="fa fa-heart"></i> {{ post.get_likes_num}}</button>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            <br>
+        {% empty %}
+            <div class="alert alert-primary" role="alert">
+                {{ profile.username }} has no Posts!
+          </div>
+        {% endfor %}
+    </div>
+    
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
+{% endblock %}

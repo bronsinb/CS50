@@ -13,19 +13,39 @@ def index(request):
     if request.method == "POST":
         post = request.POST["post"]
 
-        if request.POST["posttype"] == 'post':
-            if len(post) > 0:
+        if len(post) > 0:
+            if request.POST["posttype"] == 'post':
                 post = Post(user=request.user, text=post)
                 post.save()
-        else:
-            oldpost = Post.objects.get(pk=int(request.POST["posttype"]))
-            oldpost.text = post
-            oldpost.save()
+            else:
+                oldpost = Post.objects.get(pk=int(request.POST["posttype"]))
+                oldpost.text = post
+                oldpost.save()
 
     posts = Post.objects.all().order_by('created').reverse()
 
     return render(request, "network/index.html", {
         "posts": posts
+    })
+
+def profile(request, username):
+    if request.method == "POST":
+        post = request.POST["post"]
+
+        if len(post) > 0:
+            if request.POST["posttype"] == 'post':
+                post = Post(user=request.user, text=post)
+                post.save()
+            else:
+                oldpost = Post.objects.get(pk=int(request.POST["posttype"]))
+                oldpost.text = post
+                oldpost.save()
+
+    profile = User.objects.get(username=username)
+
+    return render(request, "network/profile.html", {
+        "posts": profile.posts.all(),
+        "profile": profile
     })
 
 
