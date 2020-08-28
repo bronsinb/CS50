@@ -13,9 +13,12 @@ def index(request):
     if request.method == "POST":
         post = request.POST["post"]
 
-        if len(post) > 0:
-            post = Post(user=request.user, text=post)
-            post.save()
+        if request.POST["posttype"] == 'post':
+            if len(post) > 0:
+                post = Post(user=request.user, text=post)
+                post.save()
+        else:
+            print(Post(pk=int(request.POST["posttype"])))
 
     posts = Post.objects.all().order_by('created').reverse()
 

@@ -34,7 +34,7 @@
                     <p class="card-text">{{ post.text }}</p>
                     {% if user.is_authenticated %}
                         {% if user == post.user %}
-                            <button class="btn"><i class="fa fa-edit"></i></button>
+                            <button data-postid="{{ post.id }}" data-post="{{ post.text }}" class="btn edit"><i class="fa fa-edit"></i></button>
                         {% endif %}
                         {% if user in post.likes.all %}
                             <button data-postid="{{ post.id }}" class="btn like"><i style="color: red;" class="fa fa-heart"></i> {{ post.get_likes_num}}</button>

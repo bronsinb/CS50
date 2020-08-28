@@ -3,6 +3,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#new-post').style.display = 'none';
 
     document.querySelector('#new-post-button').addEventListener('click', () => {
+        const hidden_element = document.createElement('input');
+        hidden_element.name = 'posttype';
+        hidden_element.type = 'hidden';
+        hidden_element.value = 'post';
         if(document.querySelector('#new-post').style.display === 'none'){
             document.querySelector('#new-post').style.display = 'block';
             document.querySelector('#new-post-button').innerHTML = "Close";
@@ -14,6 +18,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    document.querySelectorAll('.btn .edit').forEach((element) => element.addEventListener('click', () => {
+        console.log("ehh");
+        const hidden_element = document.createElement('input');
+        hidden_element.name = 'posttype';
+        hidden_element.type = 'hidden';
+        hidden_element.value = element.dataset.postid;
+        if(document.querySelector('#new-post').style.display === 'none'){
+            document.querySelector('#new-post').style.display = 'block';
+            document.querySelector('#new-post-button').innerHTML = "Close";
+            document.querySelector('#new-post-button').className = "btn btn-danger";
+            document.querySelector('#new-post-textarea').value = element.dataset.post;
+        } else {
+            document.querySelector('#new-post').style.display = 'none';
+            document.querySelector('#new-post-button').innerHTML = "New Post";
+            document.querySelector('#new-post-button').className = "btn btn-primary";
+        }
+    }));
+
     document.querySelector('#new-post-textarea').addEventListener("keyup", () => {
         var count = document.querySelector('#new-post-textarea').value.length;
         if(count > 280){
@@ -23,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('#counter').innerHTML = `${count}/280`;
     });
 
-    document.querySelectorAll('.btn.like').forEach((element) => element.addEventListener('click', () => {
+    document.querySelectorAll('.btn .like').forEach((element) => element.addEventListener('click', () => {
         fetch(`/like/${element.dataset.postid}`)
         .then(response => response.json())
         .then(json => {
