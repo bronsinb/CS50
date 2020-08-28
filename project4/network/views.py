@@ -18,7 +18,9 @@ def index(request):
                 post = Post(user=request.user, text=post)
                 post.save()
         else:
-            print(Post(pk=int(request.POST["posttype"])))
+            oldpost = Post.objects.get(pk=int(request.POST["posttype"]))
+            oldpost.text = post
+            oldpost.save()
 
     posts = Post.objects.all().order_by('created').reverse()
 
