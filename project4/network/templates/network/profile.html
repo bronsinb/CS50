@@ -4,30 +4,43 @@
 {% block body %}
     <div class="container-fluid">
         <div class="row">
-            <h3 class="col-xs">{{ profile.username }}</h3>
+            <div class="col-xs">
+                <h3>{{ profile.username }}</h3>
+                <h5 id="followers">{{ profile.get_follower_count }} Followers</h5>
+                <h5>{{ profile.get_following_count }} Followings</h5>
+            </div>
             <div class="col">
 
             </div>
-            {% if user.is_authenticated %}
-                {% if user != profile %}
-                    <button id="new-post-button" class="btn btn-primary">Follow</button>
+            <div>
+                {% if user.is_authenticated %}
+                    {% if user != profile %}
+                        {% if following %}
+                            <button id="follow" data-userid="{{ profile.id }}" class="btn btn-success">Following</button>
+                        {% else %}
+                            <button id="follow" data-userid="{{ profile.id }}" class="btn btn-primary">Follow</button>
+                        {% endif %}
+                    {% else %}
+                        <button id="new-post-button" class="btn btn-primary">New Post</button>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
                 {% endif %}
-            {% else %}
-                <a href="{% url 'login' %}" id="new-post-button" class="btn btn-primary">Login</a>
-            {% endif %}
+            </div>
         </div>
         <br>
         <div id="new-post" class="card">
             <div class="card-body">
                 <form method="POST">
                     {% csrf_token %}
-                    <h5 class="card-title">New Post</h5>        
+                    <h5 class="card-title">New Post</h5> 
                     <textarea id="new-post-textarea" name="post" class="form-control" id="exampleFormControlTextarea5" rows="2"></textarea>
                     <p id="counter">0/280</p>
                     <button type="submit" class="btn btn-primary">Post</a>
                 </form>
               </div>
         </div>
+        <br>
 
         {% for post in posts %}
             <div class="card">

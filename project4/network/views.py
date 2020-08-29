@@ -8,19 +8,20 @@ from django.urls import reverse
 
 from .models import User, Post
 
+def new_edit_post(request):
+    post = request.POST["post"]
+    if len(post) > 0:
+        if request.POST["posttype"] == 'post':
+            post = Post(user=request.user, text=post)
+            post.save()
+        else:
+            oldpost = Post.objects.get(pk=int(request.POST["posttype"]))
+            oldpost.text = post
+            oldpost.save()
 
 def index(request):
     if request.method == "POST":
-        post = request.POST["post"]
-
-        if len(post) > 0:
-            if request.POST["posttype"] == 'post':
-                post = Post(user=request.user, text=post)
-                post.save()
-            else:
-                oldpost = Post.objects.get(pk=int(request.POST["posttype"]))
-                oldpost.text = post
-                oldpost.save()
+        new_edit_post(request)
 
     posts = Post.objects.all().order_by('created').reverse()
 
@@ -30,22 +31,14 @@ def index(request):
 
 def profile(request, username):
     if request.method == "POST":
-        post = request.POST["post"]
-
-        if len(post) > 0:
-            if request.POST["posttype"] == 'post':
-                post = Post(user=request.user, text=post)
-                post.save()
-            else:
-                oldpost = Post.objects.get(pk=int(request.POST["posttype"]))
-                oldpost.text = post
-                oldpost.save()
+        new_edit_post(request)
 
     profile = User.objects.get(username=username)
 
     return render(request, "network/profile.html", {
         "posts": profile.posts.all(),
-        "profile": profile
+        "profile": profile,
+        "following": request.user in profile.follower.all()
     })
 
 
@@ -103,7 +96,7 @@ def register(request):
 @login_required
 def like(request, post_id):
 
-    # Query for requested email
+    # Query for requested post
     try:
         post = Post.objects.get(pk=post_id)
     except Post.DoesNotExist:
@@ -115,3 +108,19 @@ def like(request, post_id):
     else:
         post.likes.add(request.user)
         return JsonResponse({"like": True, "amount": len(post.likes.all())}, status=200)
+
+@login_required
+def follow(request, user_id):
+
+    # Query for requested user
+    try:
+        profile = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found."}, status=404)
+
+    if request.user in profile.follower.all():
+        request.user.follower.remove(profile)
+        return JsonResponse({"follow": False, "amount": len(profile.follower.all())}, status=200)
+    else:
+        request.user.follower.add(profile)
+        return JsonResponse({"follow": True, "amount": len(profile.follower.all())}, status=200)
