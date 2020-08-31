@@ -119,8 +119,8 @@ def follow(request, user_id):
         return JsonResponse({"error": "User not found."}, status=404)
 
     if request.user in profile.follower.all():
-        request.user.follower.remove(profile)
+        profile.follower.remove(request.user)
         return JsonResponse({"follow": False, "amount": len(profile.follower.all())}, status=200)
     else:
-        request.user.follower.add(profile)
+        profile.follower.add(request.user)
         return JsonResponse({"follow": True, "amount": len(profile.follower.all())}, status=200)

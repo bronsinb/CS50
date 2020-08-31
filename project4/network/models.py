@@ -3,13 +3,14 @@ from django.db import models
 
 
 class User(AbstractUser):
-    follower = models.ManyToManyField('self', blank=True)
+    follower = models.ManyToManyField('self', blank=True, symmetrical=False, related_name="following")
 
     def get_follower_count(self):
         return len(self.follower.all())
     
     def get_following_count(self):
-        return 0
+        return len(self.following.all())
+
 
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
