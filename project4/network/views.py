@@ -1,4 +1,5 @@
 import json
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -23,7 +24,16 @@ def index(request):
     if request.method == "POST":
         new_edit_post(request)
 
-    posts = Post.objects.all().order_by('created').reverse()
+    posts_list = Post.objects.all().order_by('created').reverse()
+    page = request.GET.get('page', 1)
+    
+    paginator = Paginator(posts_list, 10)
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
 
     return render(request, "network/index.html", {
         "posts": posts,
@@ -32,7 +42,16 @@ def index(request):
 
 def following(request):
 
-    posts = Post.objects.all().filter(user__in=request.user.following.all())
+    posts_list = Post.objects.all().filter(user__in=request.user.following.all())
+    page = request.GET.get('page', 1)
+    
+    paginator = Paginator(posts_list, 10)
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
 
     print(posts)
     
@@ -47,8 +66,19 @@ def profile(request, username):
 
     profile = User.objects.get(username=username)
 
+    posts_list = profile.posts.all()
+    page = request.GET.get('page', 1)
+    
+    paginator = Paginator(posts_list, 10)
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
     return render(request, "network/profile.html", {
-        "posts": profile.posts.all(),
+        "posts": posts,
         "profile": profile,
         "following": request.user in profile.follower.all()
     })
@@ -104,6 +134,22 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+def posts(request, page):
+
+    # Query for requested page of posts
+    try:
+        posts = Post.objects.all().reverse()
+        if len(posts) < (10 * page):
+            posts = posts[(page - 1) * 10:]
+        else:
+            posts = Post.objects.all().reverse()[(page - 1) * 10 : page * 10]
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Posts not found."}, status=404)
+
+    serialized = [post.serialize() for post in posts]
+
+    return JsonResponse({"posts": serialized}, status=200)
 
 @login_required
 def like(request, post_id):
