@@ -31,11 +31,11 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(json => {
                 if(json["follow"]){
-                    element.innerHTML = "Following";  
-                    element.className = "btn btn-success";
+                    element.innerHTML = "Unfollow";  
+                    element.className = "btn btn-danger";
                 } else {
                     element.innerHTML = "Follow";  
-                    element.className = "btn btn-primary";
+                    element.className = "btn btn-outline-success";
                 }
                 document.getElementById('followers').innerHTML = `${json['amount']} Followers`;
             })

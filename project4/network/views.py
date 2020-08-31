@@ -26,7 +26,19 @@ def index(request):
     posts = Post.objects.all().order_by('created').reverse()
 
     return render(request, "network/index.html", {
-        "posts": posts
+        "posts": posts,
+        "name": "All Posts"
+    })
+
+def following(request):
+
+    posts = Post.objects.all().filter(user__in=request.user.following.all())
+
+    print(posts)
+    
+    return render(request, "network/index.html", {
+        "posts": posts,
+        "name": "Following"
     })
 
 def profile(request, username):

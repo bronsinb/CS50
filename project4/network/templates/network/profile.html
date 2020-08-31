@@ -16,9 +16,9 @@
                 {% if user.is_authenticated %}
                     {% if user != profile %}
                         {% if following %}
-                            <button id="follow" data-userid="{{ profile.id }}" class="btn btn-success">Following</button>
+                            <button id="follow" data-userid="{{ profile.id }}" class="btn btn-danger">Unfollow</button>
                         {% else %}
-                            <button id="follow" data-userid="{{ profile.id }}" class="btn btn-primary">Follow</button>
+                            <button id="follow" data-userid="{{ profile.id }}" class="btn btn-outline-success">Follow</button>
                         {% endif %}
                     {% else %}
                         <button id="new-post-button" class="btn btn-primary">New Post</button>
