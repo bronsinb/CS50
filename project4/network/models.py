@@ -20,12 +20,3 @@ class Post(models.Model):
 
     def get_likes_num(self):
         return len(self.likes.all())
-    
-    def serialize(self):
-        return {
-            "id": self.id,
-            "user": self.user.username,
-            "text": self.text,
-            "created": self.created.strftime("%b %-d %Y, %-I:%M %p"),
-            "likes": [like.username for like in self.likes.all()]
-        }

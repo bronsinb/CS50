@@ -32,6 +32,8 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title"><a href="{% url 'profile' post.user.username %}">{{ post.user.username }}<a></h5>
+                    <h6 class="card-subtitle">{{ post.created }}</h6>
+                    <br>
                     <p class="card-text">{{ post.text }}</p>
                     {% if user.is_authenticated %}
                         {% if user == post.user %}
@@ -42,6 +44,8 @@
                         {% else %}
                             <button data-postid="{{ post.id }}" class="btn like"><i style="color: black;" class="fa fa-heart"></i> {{ post.get_likes_num}}</button>
                         {% endif %}
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn"><i style="color: black;" class="fa fa-heart"></i> {{ post.get_likes_num}}</a>
                     {% endif %}
                 </div>
             </div>

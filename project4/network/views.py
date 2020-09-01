@@ -41,8 +41,10 @@ def index(request):
     })
 
 def following(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
 
-    posts_list = Post.objects.all().filter(user__in=request.user.following.all())
+    posts_list = Post.objects.all().filter(user__in=request.user.following.all()).order_by('created').reverse()
     page = request.GET.get('page', 1)
     
     paginator = Paginator(posts_list, 10)
@@ -66,7 +68,7 @@ def profile(request, username):
 
     profile = User.objects.get(username=username)
 
-    posts_list = profile.posts.all()
+    posts_list = profile.posts.all().order_by('created').reverse()
     page = request.GET.get('page', 1)
     
     paginator = Paginator(posts_list, 10)
@@ -135,21 +137,6 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
-def posts(request, page):
-
-    # Query for requested page of posts
-    try:
-        posts = Post.objects.all().reverse()
-        if len(posts) < (10 * page):
-            posts = posts[(page - 1) * 10:]
-        else:
-            posts = Post.objects.all().reverse()[(page - 1) * 10 : page * 10]
-    except Post.DoesNotExist:
-        return JsonResponse({"error": "Posts not found."}, status=404)
-
-    serialized = [post.serialize() for post in posts]
-
-    return JsonResponse({"posts": serialized}, status=200)
 
 @login_required
 def like(request, post_id):
