@@ -2,6 +2,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelector('#new-post').style.display = 'none';
 
+    function hide_post_area(){
+        document.querySelector('#new-post').style.display = 'none';
+        document.querySelector('#new-post-button').innerHTML = "New Post";
+        document.querySelector('#new-post-button').className = "btn btn-primary";
+        document.querySelector('#new-post').children[0].children[0].children[1].innerHTML = "New Post"
+        document.querySelector('#new-post-textarea').value = '';
+        document.querySelector('#counter').innerHTML = `0/280`;
+    }
+
     if(document.getElementById('new-post-button') != null){
         document.querySelector('#new-post-button').addEventListener('click', () => {
             const hidden_element = document.createElement('input');
@@ -14,12 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.querySelector('#new-post-button').innerHTML = "Close";
                 document.querySelector('#new-post-button').className = "btn btn-danger";
             } else {
-                document.querySelector('#new-post').style.display = 'none';
-                document.querySelector('#new-post-button').innerHTML = "New Post";
-                document.querySelector('#new-post-button').className = "btn btn-primary";
-                document.querySelector('#new-post').children[0].children[0].children[1].innerHTML = "New Post"
-                document.querySelector('#new-post-textarea').value = '';
-                document.querySelector('#counter').innerHTML = `0/280`;
+                hide_post_area();
             }
         });
     }
@@ -53,8 +57,24 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('#new-post-button').innerHTML = "Close";
         document.querySelector('#new-post-button').className = "btn btn-danger";
         document.querySelector('#new-post-textarea').value = element.dataset.post;
+        document.querySelector(".btn.btn-primary.post").innerHTML = "Save";
+        document.querySelector("#new-post-form").addEventListener('submit', (event) => edit_post(event, element));
         document.querySelector('#counter').innerHTML = `${document.querySelector('#new-post-textarea').value.length}/280`;
     }));
+
+    function edit_post(event, element){
+        event.preventDefault();
+        fetch(`edit/${element.dataset.postid}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                edited: document.querySelector("#new-post-form").children[2].value
+            })
+        }).then((response) => {
+            element.parentElement.children[2].innerHTML = document.querySelector("#new-post-form").children[2].value;
+            document.querySelector("#new-post-form").removeEventListener('submit', (event) => edit_post(event, element));
+            hide_post_area();
+        })
+    }
 
     document.querySelector('#new-post-textarea').addEventListener("keyup", () => {
         var count = document.querySelector('#new-post-textarea').value.length;
