@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 edited: document.querySelector("#new-post-form").children[2].value
             })
         }).then((response) => {
-            element.parentElement.children[2].innerHTML = document.querySelector("#new-post-form").children[2].value;
+            element.parentElement.children[3].innerHTML = document.querySelector("#new-post-form").children[2].value;
             document.querySelector("#new-post-form").removeEventListener('submit', (event) => edit_post(event, element));
             hide_post_area();
         })
