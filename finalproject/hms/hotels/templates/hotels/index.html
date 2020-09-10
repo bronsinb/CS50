@@ -2,5 +2,27 @@
 {% load static %}
 
 {% block body %}
-    <h1>To Do</h1>
+    <div class="container-fluid">
+        <h3>{{ type }}</h3>
+
+        <div class="d-flex flex-wrap">
+            {% for room in rooms %}
+                <div class="card room">
+                    <img src="{{ room.image }}" class="card-img-top padding">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ room.hotel.name }}</h5>
+                        <p class="card-subtitle" style="font-size:small;">{{ room.hotel.address }}</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Type:</strong> {{ room.room_type }}</li>
+                        <li class="list-group-item"><strong>${{ room.price }}</strong> per Night</li>
+                    </ul>
+                    <div class="card-body text-center">
+                        <a href="https://maps.google.com/?q={{ room.hotel.name }}" class="btn btn-warning">Direction</a>
+                        <a href="#" class="btn btn-success">Choose</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

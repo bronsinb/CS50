@@ -4,11 +4,20 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.db import IntegrityError
 
-from .models import User
+from .models import User, Hotel, Room
 
 # Create your views here.
 def index(request):
-    return render(request, "hotels/index.html")
+    return render(request, "hotels/index.html", {
+        "type": "Rooms",
+        "rooms": Room.objects.all()
+    })
+
+# Create your views here.
+def hotels(request):
+    return render(request, "hotels/hotels.html", {
+        "hotels": Hotel.objects.all()
+    })
 
 def login_view(request):
     if request.method == "POST":

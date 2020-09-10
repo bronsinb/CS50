@@ -1,0 +1,24 @@
+{% extends "hotels/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h3>Hotels</h3>
+
+        <div class="d-flex flex-wrap">
+            {% for hotel in hotels %}
+                <div class="card room">
+                    <img src="{{ hotel.image }}" class="card-img-top padding">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ hotel.name }}</h5>
+                        <p class="card-subtitle" style="font-size:small;">{{ hotel.address }}</p>
+                    </div>
+                    <div class="card-body text-center">
+                        <a href="https://maps.google.com/?q={{ hotel.name }}" class="btn btn-warning">Direction</a>
+                        <a href="#" class="btn btn-success">Rooms</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
