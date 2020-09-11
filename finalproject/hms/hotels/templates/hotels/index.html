@@ -5,10 +5,11 @@
     <div class="container-fluid">
         <h3>{{ type }}</h3>
 
+
         <div class="d-flex flex-wrap">
             {% for room in rooms %}
                 <div class="card room">
-                    <img src="{{ room.image }}" class="card-img-top padding">
+                    <img src="{{ room.image }}" class="card-img-top image">
                     <div class="card-body">
                         <h5 class="card-title">{{ room.hotel.name }}</h5>
                         <p class="card-subtitle" style="font-size:small;">{{ room.hotel.address }}</p>
@@ -19,10 +20,37 @@
                     </ul>
                     <div class="card-body text-center">
                         <a href="https://maps.google.com/?q={{ room.hotel.name }}" class="btn btn-warning">Direction</a>
-                        <a href="#" class="btn btn-success">Choose</a>
+                        <button class="btn btn-success book">Choose</button>
                     </div>
+                </div>
+            {% empty %}
+                <div class="alert alert-warning" role="alert">
+                    No Rooms Found!
                 </div>
             {% endfor %}
         </div>
+
+        <div class="custommodal" id="book">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal title</h5>
+                        <button type="button" class="close" id="close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Modal body text goes here.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'hotels/index.js' %}"></script>
 {% endblock %}

@@ -13,7 +13,12 @@ def index(request):
         "rooms": Room.objects.all()
     })
 
-# Create your views here.
+def hotel_rooms(request, hotel_name):
+    return render(request, "hotels/index.html", {
+        "type": "Rooms: " + hotel_name,
+        "rooms": Room.objects.filter(hotel=(Hotel.objects.filter(name=hotel_name).first()))
+    })
+
 def hotels(request):
     return render(request, "hotels/hotels.html", {
         "hotels": Hotel.objects.all()
