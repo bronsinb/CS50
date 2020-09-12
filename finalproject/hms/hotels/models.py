@@ -2,13 +2,13 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # Create your models here.
+class Card(models.Model):
+    name = models.CharField(max_length=128)
+    number = models.CharField(max_length=16)
+    cvv = models.CharField(max_length=3)
+
 class User(AbstractUser):
-    pass
-
-
-#class Card(models.Model):
- #   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cards")
-  #  number = models.CharField()
+    card = models.ForeignKey(Card, on_delete=models.CASCADE, related_name="users", blank=True, null=True)
 
 class Hotel(models.Model):
     name = models.CharField(max_length=128)
@@ -27,3 +27,9 @@ class Room(models.Model):
 
     def __str__(self):
         return f"Room at {self.hotel.name} ($${self.price})"
+
+class Book(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookings")
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="bookings")
+    start = models.DateField()
+    end = models.DateField()

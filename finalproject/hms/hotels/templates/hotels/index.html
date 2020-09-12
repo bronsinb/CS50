@@ -53,10 +53,19 @@
                             <li class="list-group-item" id="room-type"></li>
                             <li class="list-group-item" id="room-number"></li>
                             <li class="list-group-item"><strong id="room-price"></strong></li>
+                            {% if user.card %}
+                                <li class="list-group-item"><strong>Card: </strong> ************{{ user.card.number|slice:"12:"}}</li>
+                            {% else %}
+                                <li class="list-group-item"><button class="btn btn-primary">Add Card</button></li>
+                            {% endif %}
                         </ul>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success">Book</button>
+                        {% if user.card %}
+                            <button type="button" class="btn btn-success">Book</button>
+                        {% else %}
+                            <button disabled type="button" class="btn btn-success">Book</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
