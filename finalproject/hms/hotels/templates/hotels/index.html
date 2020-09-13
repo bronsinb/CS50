@@ -3,8 +3,18 @@
 
 {% block body %}
     <div class="container-fluid">
-        <h3>{{ type }}</h3>
-
+        <h3 >{{ type }}</h3>
+        <div class="card searchcard">
+            <h4>Where and When?</h4>
+            <input id="search" class="form-control" placeholder="Search"/>
+            <label class="col-form-label">Check-In: </label>
+            <input id="start" class="form-control" type="date"/>
+            <label class="col-form-label">Check-Out: </label>
+            <input id="end" class="form-control" type="date"/>
+            <hr>
+            <button class="btn btn-outline-success">Search</button>
+        </div>
+        
 
         <div class="d-flex flex-wrap">
             {% for room in rooms %}
@@ -20,7 +30,6 @@
                         <li class="list-group-item"><strong>${{ room.price }}</strong> per Night</li>
                     </ul>
                     <div class="card-body text-center">
-                        <a href="https://maps.google.com/?q={{ room.hotel.name }}" class="btn btn-warning">Direction</a>
                         <button class="btn btn-success book" data-hotel="{{ room.hotel.name }}" data-address="{{ room.hotel.address }}" data-price="{{ room.price }}" data-img="{{ room.image }}" data-hotelimg="{{ room.hotel.image }}" data-number="{{ room.number }}" data-roomtype="{{ room.room_type }}">Choose</button>
                     </div>
                 </div>

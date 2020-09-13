@@ -5,6 +5,15 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("book").style.display = 'none';
     });
 
+    const today = (new Date());
+    
+    document.getElementById("start").min = today.toISOString().split("T")[0];
+    document.getElementById("start").value = today.toISOString().split("T")[0];
+
+    today.setDate(today.getDate() + 1);
+    document.getElementById("end").min = today.toISOString().split("T")[0];
+    document.getElementById("end").value = today.toISOString().split("T")[0];
+
     document.querySelectorAll(".btn.btn-success.book").forEach((element) => {
         element.addEventListener('click', () => {
             document.getElementById("book").style.display = 'block';
