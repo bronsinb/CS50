@@ -1,22 +1,25 @@
+import datetime
+import json
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.db import IntegrityError
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
-from .models import User, Hotel, Room
+from .models import User, Hotel, Room, Booking
 
 # Create your views here.
 def index(request):
     return render(request, "hotels/index.html", {
-        "type": "Rooms",
-        "rooms": Room.objects.all()
+        "type": "Rooms"
     })
 
 def hotel_rooms(request, hotel_name):
     return render(request, "hotels/index.html", {
         "type": "Rooms: " + hotel_name,
-        "rooms": Room.objects.filter(hotel=(Hotel.objects.filter(name=hotel_name).first()))
+        "hotel": hotel_name
     })
 
 def hotels(request):
@@ -74,3 +77,21 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "hotels/register.html")
+
+@csrf_exempt
+def rooms(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        start = datetime.date.fromisoformat(data['start'])
+        end = datetime.date.fromisoformat(data['end'])
+        hotel = data["hotel"]
+
+        rooms = Room.objects.all()
+
+        if len(hotel) > 0:
+            rooms = rooms.filter(hotel__in=(Hotel.objects.filter(name=hotel)))
+
+        booked_rooms = Booking.objects.filter(start__range=(start, end)) | Booking.objects.filter(end__range=(start, end))
+
+        rooms = rooms.exclude(pk__in=booked_rooms)
+        return JsonResponse([room.serialize() for room in rooms], safe=False)
