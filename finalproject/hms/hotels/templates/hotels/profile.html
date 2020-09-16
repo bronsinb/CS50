@@ -4,13 +4,15 @@
 {% block body %}
     <div class="container-fluid">
         <div class="row">
-            <h3 >@{{ user.username }}</h3>
-            {% if user.card %}
-                <label class="col-form-label col-auto"><strong>Card: </strong> ************{{ user.card.number|slice:"12:"}}</label>
-                <button type="button" class="btn btn-danger" id="addcard">Remove Card</button>
-            {% else %}
-                <button type="button" class="btn btn-success col-auto" id="addcard">Add Card</button>
-            {% endif %}
+            <h3 class="col-auto" >@{{ user.username }}</h3>
+            <div class="row col-auto" id="top">
+                {% if card %}
+                    <label class="col-form-label col-auto"><strong>Card: </strong> ************{{ card.number|slice:"12:"}}</label>
+                    <button type="button" class="btn btn-danger" id="removecard">Remove Card</button>
+                {% else %}
+                    <button type="button" class="btn btn-success" id="addcard">Add Card</button>
+                {% endif %}
+            </div>
         </div>
         <hr>
         <h3>Booked Rooms</h3>
@@ -55,10 +57,10 @@
                         <label class="col-form-label">CVV</label>
                         <input id="cvv" class="form-control" type="tel" inputmode="numeric" pattern="[0-9\s]{3}" autocomplete="cc-number" maxlength="3" placeholder="xxx"/>
                         <label class="col-form-label">Expiration Date</label>
-                        <input id="start" class="form-control" type="date"/>
+                        <input id="expire" class="form-control" type="date"/>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success">Add</button>
+                        <button type="button" class="btn btn-success addcard">Add</button>
                     </div>
                 </div>
             </div>

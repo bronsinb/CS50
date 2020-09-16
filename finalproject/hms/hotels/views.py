@@ -8,18 +8,20 @@ from django.db import IntegrityError
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import User, Hotel, Room, Booking
+from .models import User, Hotel, Room, Booking, Card
 
 # Create your views here.
 def index(request):
     return render(request, "hotels/index.html", {
-        "type": "Rooms"
+        "type": "Rooms",
+        "card": Card.objects.filter(user=request.user).first()
     })
 
 def hotel_rooms(request, hotel_name):
     return render(request, "hotels/index.html", {
         "type": "Rooms: " + hotel_name,
-        "hotel": hotel_name
+        "hotel": hotel_name,
+        "card": Card.objects.filter(user=request.user).first()
     })
 
 def hotels(request):
@@ -29,7 +31,8 @@ def hotels(request):
 
 def profile(request):
     return render(request, "hotels/profile.html", {
-        "rooms": request.user.bookings.all()
+        "rooms": request.user.bookings.all(),
+        "card": Card.objects.filter(user=request.user).first(),
     })
 
 def login_view(request):
@@ -104,3 +107,14 @@ def rooms(request):
 
         rooms = rooms.exclude(pk__in=booked_rooms)
         return JsonResponse([room.serialize() for room in rooms], safe=False)
+
+@csrf_exempt
+def card(request):
+    if request.method == "PUT":
+        if Card.objects.filter(user=request.user).first():
+            Card.objects.filter(user=request.user).first().delete()
+            return JsonResponse({"status": "Removed"}, status=200)
+        else:
+            data = json.loads(request.body)
+            Card(user=request.user, name=data["name"], number=data["cardnum"], cvv=data["cvv"], expire=data["expire"]).save()
+            return JsonResponse({"status": "Added"}, status=200)

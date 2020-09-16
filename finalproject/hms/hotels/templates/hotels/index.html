@@ -44,15 +44,15 @@
                             <li class="list-group-item"><strong id="room-price"></strong></li>
                             <li class="list-group-item" id="startdate"></li>
                             <li class="list-group-item" id="enddate"></li>
-                            {% if user.card %}
-                                <li class="list-group-item"><strong>Card: </strong> ************{{ user.card.number|slice:"12:"}}</li>
+                            {% if card %}
+                                <li class="list-group-item"><strong>Card: </strong> ************{{ card.number|slice:"12:"}}</li>
                             {% else %}
-                                <li class="list-group-item"><button class="btn btn-primary">Add Card</button></li>
+                                <li class="list-group-item"><a href="{% url 'profile' %}" class="btn btn-primary">Add Card</a></li>
                             {% endif %}
                         </ul>
                     </div>
                     <div class="modal-footer">
-                        {% if user.card %}
+                        {% if card  %}
                             <button type="button" class="btn btn-success">Book</button>
                         {% else %}
                             <button disabled type="button" class="btn btn-success">Book</button>

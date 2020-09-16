@@ -14,4 +14,5 @@ urlpatterns = [
     #API
     path("api/rooms", views.rooms, name="api_rooms"),
     path("rooms/api/rooms", views.rooms, name="room_api_rooms"),
+    path("card", views.card, name="card"),
 ]
