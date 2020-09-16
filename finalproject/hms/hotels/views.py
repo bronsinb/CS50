@@ -27,6 +27,11 @@ def hotels(request):
         "hotels": Hotel.objects.all()
     })
 
+def profile(request):
+    return render(request, "hotels/profile.html", {
+        "rooms": request.user.bookings.all()
+    })
+
 def login_view(request):
     if request.method == "POST":
 
@@ -86,8 +91,6 @@ def rooms(request):
         end = datetime.date.fromisoformat(data['end'])
         hotel = data["hotel"]
         search = data["search"]
-
-        print(search)
 
         rooms = Room.objects.all()
 

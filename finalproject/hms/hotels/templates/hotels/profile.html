@@ -1,0 +1,71 @@
+{% extends "hotels/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <h3 >@{{ user.username }}</h3>
+            {% if user.card %}
+                <label class="col-form-label col-auto"><strong>Card: </strong> ************{{ user.card.number|slice:"12:"}}</label>
+                <button type="button" class="btn btn-danger" id="addcard">Remove Card</button>
+            {% else %}
+                <button type="button" class="btn btn-success col-auto" id="addcard">Add Card</button>
+            {% endif %}
+        </div>
+        <hr>
+        <h3>Booked Rooms</h3>
+
+        <div class="d-flex flex-wrap">
+            {% for room in user.bookings.all %}
+                <div class="card room">
+                    <img src="{{ room.room.image }}" class="card-img-top image">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ room.room.hotel.name }}</h5>
+                        <p class="card-subtitle" style="font-size:small;">{{ room.room.hotel.address }}</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Type:</strong> {{ room.room.room_type }}</li>
+                        <li class="list-group-item"><strong>Room Number:</strong> {{ room.room.number }}</li>
+                        <li class="list-group-item"><strong>${{ room.room.price }}</strong> per Night</li>
+                        <li class="list-group-item"><strong>Check In:</strong> {{ room.start }}</li>
+                        <li class="list-group-item"><strong>Check Out:</strong> {{ room.end }}</li>
+                    </ul>
+                </div>
+            {% empty %}
+                <div class="alert alert-warning" role="alert">
+                    No Room Booked Yet!
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="custommodal" id="addcardmodal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Card</h5>
+                        <button type="button" class="close" id="close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="col-form-label">Name on Card</label>
+                        <input id="name" class="form-control">
+                        <label class="col-form-label" >Card Number</label>
+                        <input id="cardnum" class="form-control" type="tel" inputmode="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="16" placeholder="xxxx xxxx xxxx xxxx"/>
+                        <label class="col-form-label">CVV</label>
+                        <input id="cvv" class="form-control" type="tel" inputmode="numeric" pattern="[0-9\s]{3}" autocomplete="cc-number" maxlength="3" placeholder="xxx"/>
+                        <label class="col-form-label">Expiration Date</label>
+                        <input id="start" class="form-control" type="date"/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'hotels/profile.js' %}"></script>
+{% endblock %}

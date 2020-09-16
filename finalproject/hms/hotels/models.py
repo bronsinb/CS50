@@ -6,6 +6,7 @@ class Card(models.Model):
     name = models.CharField(max_length=128)
     number = models.CharField(max_length=16)
     cvv = models.CharField(max_length=3)
+    expire = models.DateField()
 
     def __str__(self):
         return f"Card of {self.name}"

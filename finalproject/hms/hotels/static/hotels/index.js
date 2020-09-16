@@ -128,10 +128,16 @@ function populate_rooms(search, start, end){
                 document.getElementById("room-price").innerHTML += " per Night";
 
                 document.getElementById("startdate").innerHTML = "";
-                document.getElementById("startdate").innerHTML = `Check In: ${document.getElementById("start").value}`
+                const checkin = document.createElement('strong');
+                checkin.innerHTML = "Check In: ";
+                document.getElementById("startdate").append(checkin);
+                document.getElementById("startdate").innerHTML += document.getElementById("start").value;
 
                 document.getElementById("enddate").innerHTML = "";
-                document.getElementById("enddate").innerHTML = `Check Out ${document.getElementById("end").value}`
+                const checkout = document.createElement('strong');
+                checkout.innerHTML = "Check Out: ";
+                document.getElementById("enddate").append(checkout);
+                document.getElementById("enddate").innerHTML += document.getElementById("end").value;
     
                 document.getElementById("room-img").src = element.dataset.img;
                 document.getElementById("hotel-img").src = element.dataset.hotelimg;
