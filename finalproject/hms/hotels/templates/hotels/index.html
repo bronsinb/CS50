@@ -13,7 +13,7 @@
             <label class="col-form-label">Check-Out: </label>
             <input id="end" class="form-control" type="date"/>
             <hr>
-            <button class="btn btn-outline-success">Search</button>
+            <button class="btn btn-outline-success search">Search</button>
         </div>
         
 
@@ -42,6 +42,8 @@
                             <li class="list-group-item" id="room-type"></li>
                             <li class="list-group-item" id="room-number"></li>
                             <li class="list-group-item"><strong id="room-price"></strong></li>
+                            <li class="list-group-item" id="startdate"></li>
+                            <li class="list-group-item" id="enddate"></li>
                             {% if user.card %}
                                 <li class="list-group-item"><strong>Card: </strong> ************{{ user.card.number|slice:"12:"}}</li>
                             {% else %}

@@ -1,15 +1,18 @@
-function populate_rooms(start, end){
+function populate_rooms(search, start, end){
     fetch("api/rooms", {
         method: "POST",
         body: JSON.stringify({
             start: start,
             end: end,
-            hotel: document.getElementById("hotel").innerHTML
+            hotel: document.getElementById("hotel").innerHTML,
+            search: search
         })
     })
     .then(response => response.json())
     .then(rooms => {
         const rooms_area = document.getElementById("roomsarea");
+        rooms_area.innerHTML = "";
+        console.log(search);
         if(rooms.length == 0){
             const alert = document.createElement('div');
             alert.className = "alert alert-warning";
@@ -123,6 +126,12 @@ function populate_rooms(start, end){
                 price.innerHTML = `$${element.dataset.price}`;
                 document.getElementById("room-price").append(price);
                 document.getElementById("room-price").innerHTML += " per Night";
+
+                document.getElementById("startdate").innerHTML = "";
+                document.getElementById("startdate").innerHTML = `Check In: ${document.getElementById("start").value}`
+
+                document.getElementById("enddate").innerHTML = "";
+                document.getElementById("enddate").innerHTML = `Check Out ${document.getElementById("end").value}`
     
                 document.getElementById("room-img").src = element.dataset.img;
                 document.getElementById("hotel-img").src = element.dataset.hotelimg;
@@ -142,9 +151,16 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById("end").min = nextday.toISOString().split("T")[0];
     document.getElementById("end").value = nextday.toISOString().split("T")[0];
 
-    populate_rooms(today.toISOString().split("T")[0], nextday.toISOString().split("T")[0]);
+    populate_rooms(null, today.toISOString().split("T")[0], nextday.toISOString().split("T")[0]);
 
     document.getElementById("book").style.display = 'none';
+
+    document.querySelector(".btn.btn-outline-success.search").addEventListener("click", () => {
+        search = document.getElementById("search").value;
+        start = document.getElementById("start").value;
+        end = document.getElementById("end").value;
+        populate_rooms(search, start, end);
+    });
 
     document.getElementById("close").addEventListener('click', () => {
         document.getElementById("book").style.display = 'none';

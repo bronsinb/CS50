@@ -85,11 +85,17 @@ def rooms(request):
         start = datetime.date.fromisoformat(data['start'])
         end = datetime.date.fromisoformat(data['end'])
         hotel = data["hotel"]
+        search = data["search"]
+
+        print(search)
 
         rooms = Room.objects.all()
 
         if len(hotel) > 0:
             rooms = rooms.filter(hotel__in=(Hotel.objects.filter(name=hotel)))
+
+        if search:
+            rooms = rooms.filter(hotel__in=(Hotel.objects.filter(name__icontains=search))) | rooms.filter(hotel__in=(Hotel.objects.filter(address__icontains=search))) | rooms.filter(room_type__icontains=search) | rooms.filter(number__icontains=search) | rooms.filter(price__icontains=search)
 
         booked_rooms = Booking.objects.filter(start__range=(start, end)) | Booking.objects.filter(end__range=(start, end))
 
