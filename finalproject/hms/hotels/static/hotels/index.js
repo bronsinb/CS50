@@ -86,6 +86,7 @@ function populate_rooms(search, start, end){
 
             const choose = document.createElement('button');
             choose.className = "btn btn-success book";
+            choose.dataset.roomid = room.id;
             choose.dataset.hotel = room.hotel.name;
             choose.dataset.address = room.hotel.address;
             choose.dataset.price = room.price;
@@ -105,6 +106,10 @@ function populate_rooms(search, start, end){
     .then(() => {
         document.querySelectorAll(".btn.btn-success.book").forEach((element) => {
             element.addEventListener('click', () => {
+                document.getElementById("roomid").value = element.dataset.roomid
+                document.getElementById("hidden-start").value = document.getElementById("start").value
+                document.getElementById("hidden-end").value = document.getElementById("end").value
+
                 document.getElementById("book").style.display = 'block';
                 document.getElementById("hotel-name").innerHTML = element.dataset.hotel;
                 document.getElementById("hotel-address").innerHTML = element.dataset.address;

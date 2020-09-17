@@ -11,13 +11,26 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import User, Hotel, Room, Booking, Card
 
 # Create your views here.
+def book_room(request):
+    room = Room.objects.filter(pk=int(request.POST["roomid"])).first()
+    start = datetime.date.fromisoformat(request.POST["start"])
+    end = datetime.date.fromisoformat(request.POST["end"])
+
+    Booking(user=request.user, room=room, start=start, end=end).save()
+
 def index(request):
+    if request.method == "POST":
+        book_room(request)
+
     return render(request, "hotels/index.html", {
         "type": "Rooms",
         "card": Card.objects.filter(user=request.user).first()
     })
 
 def hotel_rooms(request, hotel_name):
+    if request.method == "POST":
+        book_room(request)
+
     return render(request, "hotels/index.html", {
         "type": "Rooms: " + hotel_name,
         "hotel": hotel_name,
@@ -30,6 +43,9 @@ def hotels(request):
     })
 
 def profile(request):
+    if request.method == "POST":
+        Booking.objects.filter(pk=int(request.POST["bookingid"])).delete()
+
     return render(request, "hotels/profile.html", {
         "rooms": request.user.bookings.all(),
         "card": Card.objects.filter(user=request.user).first(),

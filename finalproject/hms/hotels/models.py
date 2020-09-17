@@ -38,6 +38,7 @@ class Room(models.Model):
 
     def serialize(self):
         return {
+            "id": self.id,
             "hotel": self.hotel.serialize(),
             "number": self.number,
             "room_type": self.room_type,

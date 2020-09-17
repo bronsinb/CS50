@@ -32,6 +32,13 @@
                         <li class="list-group-item"><strong>Check In:</strong> {{ room.start }}</li>
                         <li class="list-group-item"><strong>Check Out:</strong> {{ room.end }}</li>
                     </ul>
+                    <div class="card-body text-center">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="bookingid" value="{{ room.id }}"/>
+                            <button class="btn btn-outline-danger cancel">Cancel Reservation</button>
+                        </form>
+                    </div>
                 </div>
             {% empty %}
                 <div class="alert alert-warning" role="alert">
