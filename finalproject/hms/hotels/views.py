@@ -24,7 +24,7 @@ def index(request):
 
     return render(request, "hotels/index.html", {
         "type": "Rooms",
-        "card": Card.objects.filter(user=request.user).first()
+        "card": Card.objects.filter(user=request.user).first() if request.user.is_authenticated else None
     })
 
 def hotel_rooms(request, hotel_name):
@@ -34,7 +34,7 @@ def hotel_rooms(request, hotel_name):
     return render(request, "hotels/index.html", {
         "type": "Rooms: " + hotel_name,
         "hotel": hotel_name,
-        "card": Card.objects.filter(user=request.user).first()
+        "card": Card.objects.filter(user=request.user).first() if request.user.is_authenticated else None
     })
 
 def hotels(request):
@@ -121,7 +121,8 @@ def rooms(request):
 
         booked_rooms = Booking.objects.filter(start__range=(start, end)) | Booking.objects.filter(end__range=(start, end))
 
-        rooms = rooms.exclude(pk__in=booked_rooms)
+        rooms = rooms.exclude(pk__in=booked_rooms.values('room'))
+        rooms = rooms.order_by('hotel').reverse()
         return JsonResponse([room.serialize() for room in rooms], safe=False)
 
 @csrf_exempt

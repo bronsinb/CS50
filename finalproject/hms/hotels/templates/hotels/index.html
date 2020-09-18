@@ -23,47 +23,61 @@
         <div class="custommodal" id="book">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Book Room</h5>
-                        <button type="button" class="close" id="close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <div class="modal-body">
-                            <h5 id="hotel-name">{{ room.hotel.name }}</h5>
-                            <p id="hotel-address" style="font-size:small;">{{ room.hotel.address }}</p>
-                            <hr>
-                            <div class="row">
-                                <img class="bookimage" id="room-img">
-                                <img class="bookimage" id="hotel-img">
+                    {% if user.is_authenticated %}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Book Room</h5>
+                            <button type="button" class="close" id="close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <h5 id="hotel-name">{{ room.hotel.name }}</h5>
+                                <p id="hotel-address" style="font-size:small;">{{ room.hotel.address }}</p>
+                                <hr>
+                                <div class="row">
+                                    <img class="bookimage" id="room-img">
+                                    <img class="bookimage" id="hotel-img">
+                                </div>
+                                <hr>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item" id="room-type"></li>
+                                    <li class="list-group-item" id="room-number"></li>
+                                    <li class="list-group-item"><strong id="room-price"></strong></li>
+                                    <li class="list-group-item" id="startdate"></li>
+                                    <li class="list-group-item" id="enddate"></li>
+                                    {% if card %}
+                                        <li class="list-group-item"><strong>Card: </strong> ************{{ card.number|slice:"12:"}}</li>
+                                    {% else %}
+                                        <li class="list-group-item"><a href="{% url 'profile' %}" class="btn btn-primary">Add Card</a></li>
+                                    {% endif %}
+                                </ul>
                             </div>
-                            <hr>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item" id="room-type"></li>
-                                <li class="list-group-item" id="room-number"></li>
-                                <li class="list-group-item"><strong id="room-price"></strong></li>
-                                <li class="list-group-item" id="startdate"></li>
-                                <li class="list-group-item" id="enddate"></li>
-                                {% if card %}
-                                    <li class="list-group-item"><strong>Card: </strong> ************{{ card.number|slice:"12:"}}</li>
+                            <div class="modal-footer">
+                                {% if card  %}
+                                    <input type="hidden" name="roomid" id="roomid"/>
+                                    <input type="hidden" name="start" id="hidden-start"/>
+                                    <input type="hidden" name="end" id="hidden-end"/>
+                                    <button type="submit" class="btn btn-success">Book</button>
                                 {% else %}
-                                    <li class="list-group-item"><a href="{% url 'profile' %}" class="btn btn-primary">Add Card</a></li>
+                                    <button disabled type="button" class="btn btn-success">Book</button>
                                 {% endif %}
-                            </ul>
+                            </div>
+                        </form>
+                    {% else %}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Log In or Sign Up</h5>
+                            <button type="button" class="close" id="close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                        <div class="modal-footer">
-                            {% if card  %}
-                                <input type="hidden" name="roomid" id="roomid"/>
-                                <input type="hidden" name="start" id="hidden-start"/>
-                                <input type="hidden" name="end" id="hidden-end"/>
-                                <button type="submit" class="btn btn-success">Book</button>
-                            {% else %}
-                                <button disabled type="button" class="btn btn-success">Book</button>
-                            {% endif %}
+                        <div class="modal-body text-center">
+                            <a class="btn btn-success" href="{% url 'login' %}">Log In</a>
+                            <label class="padding"><strong>OR</strong></label>
+                            <a class="btn btn-warning" href="{% url 'register' %}">Register</a>
                         </div>
-                    </form>
+                    {% endif %}
                 </div>
             </div>
         </div>
