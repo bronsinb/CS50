@@ -1,6 +1,8 @@
 # urHotel: Hotel Management System Final Project
 ## Description
 urHotel is a Hotel Management System where administrators have the ability to add hotels and rooms to the database for users to book them based on availability. Users can view hotels from the Rooms page or from each hotel page, search for rooms based on query, check-in date, and check-out date, add their preferred card to their account for future bookings, and cancel their current reservations.
+
+This project satisfies the distinctiveness and complexity of its requirements. It's distinct from the other projects in this course, it uses the Django framework, it has 4 models on top of the User model, and uses two JavaScript files to do front-end operations. The added files and code in this project are described below.
 ## Static Files
 #### styles.css
 CSS file for minor styling on top of Bootstrap.
@@ -9,6 +11,7 @@ JavaScript file for front-end operations for the index.html file. This file hand
 #### profile.js
 JavaScript file for front-end operations for the profile.html file. This file handles adding card modal view, and the logic behind adding and removing credit/debit card using an API call.
 ## Templates Folder
+HTML files within this folder use classes from Bootstrap for a beautiful UI and for mobile-responsiveness
 #### layout.html
 HTML file for the overall structure of the website including the navigation bar.
 #### login.html and register.html
