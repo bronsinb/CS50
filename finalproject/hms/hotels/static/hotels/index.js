@@ -13,8 +13,6 @@ function populate_rooms(search, start, end){
         const rooms_area = document.getElementById("roomsarea");
         rooms_area.innerHTML = "";
 
-        console.log(rooms);
-
         if(rooms.length == 0){
             const alert = document.createElement('div');
             alert.className = "alert alert-warning";
@@ -108,13 +106,16 @@ function populate_rooms(search, start, end){
     .then(() => {
         document.querySelectorAll(".btn.btn-success.book").forEach((element) => {
             element.addEventListener('click', () => {
-                if(document.getElementById("roomid") == null){
+                if(element.dataset.roomid == null){
                     document.getElementById("book").style.display = 'block';
                     return;
                 }
-                document.getElementById("roomid").value = element.dataset.roomid
-                document.getElementById("hidden-start").value = document.getElementById("start").value
-                document.getElementById("hidden-end").value = document.getElementById("end").value
+
+                if(document.getElementById("roomid") != null){
+                    document.getElementById("roomid").value = element.dataset.roomid
+                    document.getElementById("hidden-start").value = document.getElementById("start").value
+                    document.getElementById("hidden-end").value = document.getElementById("end").value
+                }
 
                 document.getElementById("book").style.display = 'block';
                 document.getElementById("hotel-name").innerHTML = element.dataset.hotel;
